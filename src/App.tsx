@@ -1,19 +1,37 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './App.css';
 import { store } from './store/store';
 import { addNoteAction } from './actions/action';
 import { useDispatch, useSelector } from 'react-redux';
 
 function App() {
+
+  const regex = /#\w+/g;
+  const spaceBetween = " ";
+
+  const currentTitle = useRef<string>();
+  const currentText = useRef<string>();
+  const currentHashTag = useRef<string[] | null | undefined>();
+
   const dispatch = useDispatch();
-  // const arrDatabaseObj = useSelector((state: any) => state.dataBase[0]);
   const arrNoteObj = useSelector((state: any) => state.note[0]);
 
-  //For re-render component
-  const [, updateState] = useState({});
-  const forceUpdate = useCallback(() => {
-    updateState({});
-  }, []);
+  const [areaTitle, setAreaTitle] = useState<string>();
+  const [areaText, setAreaText] = useState<string>();
+  const [hashTags, setHashTags] = useState<string[] | null | undefined>();
+  const [colorToggler, setColorToggler] = useState<boolean>(false);
+
+  function trackTitle(e: any) {
+    currentTitle.current = e.target.value;
+    setAreaTitle(currentTitle.current)
+  }
+  function trackText(e: any) {
+    currentText.current = e.target.value;
+    setAreaText(currentText.current)
+    const findHashTag = currentText.current?.match(regex);
+    setHashTags(findHashTag);
+    currentHashTag.current = findHashTag;
+  }
 
   //Check existence of database
   if (!('indexedDB' in window)) {
@@ -21,11 +39,11 @@ function App() {
   }
   //Open database 
   const request = window.indexedDB.open("Database", 1);
-  request.onerror = (event) => {
-    console.error(`Error: ${event}`);
+  request.onerror = (e) => {
+    console.error(`Error: ${e}`);
   };
-  request.onupgradeneeded = (event) => {
-    const db = (event.target as IDBOpenDBRequest).result;
+  request.onupgradeneeded = (e) => {
+    const db = (e.target as IDBOpenDBRequest).result;
     db.createObjectStore("notes");
   }
 
@@ -34,9 +52,10 @@ function App() {
     e.preventDefault();
     const titleValue = e.target[0].value;
     const textValue = e.target[1].value;
+    const hashTagValue = hashTags;
 
     if (e.target[0].value !== '' && e.target[1].value !== '') {
-      dispatch(addNoteAction(titleValue, textValue));
+      dispatch(addNoteAction(titleValue, textValue, hashTagValue));
 
       const lastObjNumber = store.getState().note[0].length - 1;
       const lastObj = store.getState().note[0][lastObjNumber];
@@ -47,14 +66,15 @@ function App() {
         const db = (event.target as IDBOpenDBRequest).result as IDBDatabase;
         const transaction = db.transaction("notes", "readwrite");
         const objectStore = transaction.objectStore("notes");
-
         objectStore.add(lastObj, lastObj.id)
-        request.onerror = (error) => {
-          console.error(`Error: ${error}`);
+        request.onerror = (e) => {
+          console.error(`Error: ${e}`);
         };
       }
       e.target.reset();
-      forceUpdate();
+      setAreaTitle("")
+      setAreaText("")
+      currentHashTag.current = undefined;
     } else {
       return alert("you should enter title and text");
     };
@@ -65,7 +85,6 @@ function App() {
     event.preventDefault();
     const idNote: number = event.target.id;
     dispatch({ type: "DELETE_NOTE", payload: idNote })
-    console.log(store.getState().note[0])
     const request = window.indexedDB.open("Database", 1);
     request.onsuccess = (event: Event) => {
       const db = (event.target as IDBOpenDBRequest).result as IDBDatabase;
@@ -74,46 +93,101 @@ function App() {
       let id: number = +idNote;
       objectStoreNotes.delete(id);
     };
-    request.onerror = (event) => {
-      console.error(`Error: ${event}`);
+    request.onerror = (e) => {
+      console.error(`Error: ${e}`);
     };
   };
 
+  // Update obj
+  const updateNote = (e: any) => {
+    e.preventDefault();
+    const idNote: number = +e.target.id;
+    arrNoteObj.map((element: any) => {
+      if (element.id === idNote) {
+        element.text = currentText.current;
+        element.title = currentTitle.current;
+      }
+    });
+    const request = window.indexedDB.open("Database", 1);
+    request.onsuccess = (e) => {
+      const db = (e.target as IDBOpenDBRequest).result as IDBDatabase;
+      const transactionNotes = db.transaction('notes', 'readwrite');
+      const objectStoreNotes = transactionNotes.objectStore('notes');
+      const getRequest = objectStoreNotes.get(idNote);
+      getRequest.onsuccess = () => {
+        const data = getRequest.result;
+        data.text = currentText.current;
+        data.title = currentTitle.current;
+        objectStoreNotes.put(data, +idNote);
+      }
+    };
+    request.onerror = (e) => {
+      console.error(`Error: ${e}`);
+    };
+    setAreaTitle("");
+    setAreaText("");
+  };
+
+  function findNote(e: any) {
+    if (colorToggler === false) {
+      setColorToggler(true);
+    } else {
+      setColorToggler(false);
+    }
+
+  }
+  console.log(colorToggler)
 
 
   return (
     <div className="App">
       <header className="App-header">
-        <div>
+        <div id='allNotes'>
           New notes:
           <ul>
             {arrNoteObj?.map((e: any) =>
-              <li key={e.id}>
-                <div>
-                  {e.title}
+              <div id="notes" key={e.id}>
+                <div id='data'>
+                  Title: {e.title}
+                  <br />
+                  Text:
                   <br />
                   {e.text}
                 </div>
-                <button id={e.id} onClick={deleteNote}>Delete</button>
-              </li>)}
+                <div id='buttons'>
+                  <button id={e.id} onClick={updateNote}>Update</button>
+                  <br />
+                  <br />
+                  <br />
+                  <button id={e.id} onClick={deleteNote}>Delete</button>
+                </div>
+              </div>)}
           </ul>
         </div>
         <div>
           <div>
-            <form onSubmit={submitFunc}>
+            <form id={"form"} onSubmit={submitFunc}>
               <label>
                 Title:
-                <textarea name="textinput" id="textinput" cols={50} rows={1} style={{ resize: "none", display: 'flex', }}></textarea>
+                <textarea name="titleinput" id="titleinput" cols={50} rows={1} style={{ resize: "none", display: 'flex', }} value={areaTitle} onChange={trackTitle}></textarea>
               </label>
               <label>
                 Text area:
-                <textarea name="textinput" id="textinput" cols={50} rows={10} style={{ resize: "none", display: 'flex', }}></textarea>
+                <textarea name="textinput" id="textinput" cols={50} rows={10} style={{ resize: "none", display: 'flex', }} value={areaText} onChange={trackText}></textarea>
                 <button type='submit'>Submit</button>
               </label>
             </form>
+            <label id='taglist'>Tag List:
+              <div>
+                {arrNoteObj?.map((e: any) =>
+                  <span key={e.id} id={e.id} style={{ backgroundColor: `${colorToggler === true ? "red" : ""}` }} onClick={findNote}>
+                    {e.hashTag ? e.hashTag.join(' ') + spaceBetween : null}
+                  </span>)}
+              </div>
+            </label>
+            {currentHashTag.current ? "New hash tag is found: " + currentHashTag.current : null}
           </div>
         </div>
-
       </header>
     </div>
   );
