@@ -9,7 +9,23 @@
   width: 1200px;
 }
 
-#allNotes {
+#taglist {
+  font-size: 11px;
+}
+
+#addButton {
+  margin-top: 58px;
+  font-size: larger;
+  border-radius: 5px;
+  border: solid black 1px;
+}
+
+#cancelButton {
+  margin-left: 10px;
+}
+
+#topNotes {
+  margin-bottom: 30px;
 }
 
 #notes {
@@ -19,8 +35,19 @@
   border-radius: 5px;
   padding: 10px;
   width: 500px;
-  margin-bottom: 30px;
   height: 150px;
+}
+
+#data {
+  height: auto;
+  display: flex;
+  margin: 0;
+  word-break: break-word;
+  overflow: auto;
+}
+
+#hashTag {
+  color: rgb(117, 117, 117);
 }
 
 #notes::-webkit-scrollbar {
@@ -38,7 +65,31 @@ ul {
   justify-content: space-between;
   right: 100%;
 }
-#data {
-  margin: 0;
-  text-wrap: wrap;
+
+#titleinput {
+  margin-bottom: 16px;
+  border-radius: 5px;
+  border: black 1px solid;
+}
+#textinput {
+  border: black 1px solid;
+  margin-bottom: 16px;
+  border-radius: 5px;
+}
+
+#inpText {
+  width: 250px;
+  height: 150px;
+}
+
+#divInput {
+  border: 1px solid gray;
+  font: medium -moz-fixed;
+  font: -webkit-small-control;
+  height: 150px;
+  overflow: auto;
+  padding: 2px;
+  resize: both;
+  width: 500px;
+  resize: none;
 }
