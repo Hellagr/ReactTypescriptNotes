@@ -40,17 +40,25 @@ function App() {
 
   function trackDivInput(e: any) {
     e.preventDefault();
-    let divInput = document.getElementById('divInput') as HTMLDivElement;
+
+    let divInput = document.getElementById('divInput')!;
     const findHashTag = divInput.textContent?.match(regex);
     setHashTags(findHashTag);
     currentHashTag.current = findHashTag;
 
+    const selection: Selection = window.getSelection()!;
+    console.log('selection::: ', selection);
+    const range = selection.getRangeAt(0);
+    const clonedRange = range?.cloneRange();
+    clonedRange?.selectNodeContents(divInput);
+    clonedRange?.setEnd(range.endContainer, range.endOffset);
+
+    const currentCursorPosition: any = clonedRange.toString().length;
+
     const divText = divInput.textContent;
     const replaceText: any = divText?.replaceAll(regex, "<mark>$&</mark>");
     divInput.innerHTML = replaceText;
-    const range = document.createRange();
-    console.log('range::: ', range);
-    const selection = window.getSelection();
+
 
   }
 
@@ -286,6 +294,7 @@ function App() {
                 {/* <textarea name="textedit" id="textedit" cols={50} rows={10} style={{ resize: "none", display: 'flex', }} onChange={trackText}><div>asd</div></textarea>
                 <input type="text" /> */}
                 <div contentEditable={true} id='divInput' onInput={trackDivInput}></div>
+                {/* <input value="&quot;http://sansoftmax.blogspot.com/&quot;"></input> */}
               </label>
               <button type='submit'>Update</button>
               <input type="button" id='cancelButton' value="Cancel" onClick={cancelEdit} />
