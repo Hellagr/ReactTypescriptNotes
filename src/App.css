@@ -83,13 +83,35 @@ ul {
 }
 
 #divInput {
+  color: transparent;
+  background: transparent;
   border: 1px solid gray;
-  font: medium -moz-fixed;
-  font: -webkit-small-control;
   height: 150px;
   overflow: auto;
   padding: 2px;
-  resize: both;
   width: 500px;
   resize: none;
+  caret-color: black;
+  white-space: break-spaces;
+  word-wrap: break-word;
+}
+
+#divInput > mark {
+  color: transparent;
+  background: transparent;
+}
+
+#pre {
+  position: absolute;
+  overflow: auto;
+  padding: 3px;
+  pointer-events: none;
+  height: 150px;
+  width: 500px;
+  white-space: break-spaces;
+  word-wrap: break-word;
+}
+
+#pre > mark {
+  background: rgba(255, 255, 0, 0.5);
 }

@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 function App() {
 
   const regex = /#\w+/g;
-
   const spaceBetween = " ";
+
 
   const currentTitle = useRef<string>();
   const currentText = useRef<string>();
@@ -21,7 +21,7 @@ function App() {
 
   const [areaTitle, setAreaTitle] = useState<string>();
   const [areaText, setAreaText] = useState<string>();
-  const [divText, setDivText] = useState<string>("");
+  const [divText, setDivText] = useState<string>();
   const [hashTags, setHashTags] = useState<string[] | null | undefined>();
   const [colorToggler, setColorToggler] = useState<boolean>(false);
 
@@ -41,26 +41,24 @@ function App() {
   function trackDivInput(e: any) {
     e.preventDefault();
 
-    let divInput = document.getElementById('divInput')!;
+    const divInput = document.getElementById('divInput') as HTMLDivElement;
+    const pre = document.getElementById('pre') as HTMLDivElement;
     const findHashTag = divInput.textContent?.match(regex);
     setHashTags(findHashTag);
     currentHashTag.current = findHashTag;
 
-    const selection: Selection = window.getSelection()!;
-    console.log('selection::: ', selection);
-    const range = selection.getRangeAt(0);
-    const clonedRange = range?.cloneRange();
-    clonedRange?.selectNodeContents(divInput);
-    clonedRange?.setEnd(range.endContainer, range.endOffset);
-
-    const currentCursorPosition: any = clonedRange.toString().length;
-
     const divText = divInput.textContent;
     const replaceText: any = divText?.replaceAll(regex, "<mark>$&</mark>");
-    divInput.innerHTML = replaceText;
-
+    pre.innerHTML = replaceText;
 
   }
+
+  function scrollMinor() {
+    const divInput = document.getElementById('divInput') as HTMLDivElement;
+    const pre = document.getElementById('pre') as HTMLDivElement;
+    pre.scrollTo(divInput.scrollLeft, divInput.scrollTop);
+  }
+
 
   //Check existence of database
   if (!('indexedDB' in window)) {
@@ -193,6 +191,7 @@ function App() {
     const editText = document.getElementById("textedit") as HTMLTextAreaElement;
     const addButton = document.getElementById('addButton') as HTMLButtonElement;
     let divInput = document.getElementById('divInput') as HTMLDivElement;
+    let pre = document.getElementById('pre') as HTMLDivElement;
     if (formNote.style.display === 'block') {
       alert("Finish the creating note!")
     } else {
@@ -204,6 +203,7 @@ function App() {
 
       const valInput = objFromStore[0].text.replaceAll(regex, "<mark>$&</mark>");
       divInput.innerHTML = valInput;
+      pre.innerHTML = valInput;
       currentDiv.current = valInput;
 
       const findHashTag = divInput.textContent?.match(regex);
@@ -291,10 +291,12 @@ function App() {
               </label>
               <label id='labelText'>
                 Text area:
-                {/* <textarea name="textedit" id="textedit" cols={50} rows={10} style={{ resize: "none", display: 'flex', }} onChange={trackText}><div>asd</div></textarea>
+                {/* <textarea name="textedit" id="textedit" cols={50} rows={10} style={{ resize: "none", display: 'flex', }} onInput={highlightWords}><div>asd</div></textarea>
                 <input type="text" /> */}
-                <div contentEditable={true} id='divInput' onInput={trackDivInput}></div>
-                {/* <input value="&quot;http://sansoftmax.blogspot.com/&quot;"></input> */}
+                <div id='pre'></div>
+                <div contentEditable={true} id='divInput' unselectable='on' onScroll={scrollMinor} spellCheck="false" onInput={trackDivInput}></div>
+                {/* <input type='text' value={divText}></input> */}
+
               </label>
               <button type='submit'>Update</button>
               <input type="button" id='cancelButton' value="Cancel" onClick={cancelEdit} />
