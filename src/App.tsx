@@ -15,13 +15,14 @@ function App() {
   const currentDiv = useRef<string>("");
   const currentHashTag = useRef<string[] | null | undefined>();
   const currentNoteId = useRef(0);
+  const pickedHashTag = useRef<string>();
 
   const dispatch = useDispatch();
   const arrNoteObj = useSelector((state: any) => state.note[0]);
 
   const [areaTitle, setAreaTitle] = useState<string>();
   const [areaText, setAreaText] = useState<string>();
-  const [divText, setDivText] = useState<string>();
+  const [ifActive, setIfActive] = useState<boolean>(false);
   const [hashTags, setHashTags] = useState<string[] | null | undefined>();
   const [colorToggler, setColorToggler] = useState<boolean>(false);
 
@@ -40,17 +41,14 @@ function App() {
 
   function trackDivInput(e: any) {
     e.preventDefault();
-
     const divInput = document.getElementById('divInput') as HTMLDivElement;
     const pre = document.getElementById('pre') as HTMLDivElement;
     const findHashTag = divInput.textContent?.match(regex);
     setHashTags(findHashTag);
     currentHashTag.current = findHashTag;
-
     const divText = divInput.textContent;
     const replaceText: any = divText?.replaceAll(regex, "<mark>$&</mark>");
     pre.innerHTML = replaceText;
-
   }
 
   function scrollMinor() {
@@ -168,13 +166,11 @@ function App() {
   };
 
   function findNote(e: any) {
-    if (colorToggler === false) {
-      setColorToggler(true);
-    } else {
-      setColorToggler(false);
-    }
-
+    pickedHashTag.current = e.target.textContent;
+    ifActive === true ? setIfActive(false) : setIfActive(true);
+    ifActive === true ? e.nativeEvent.target.style.backgroundColor = "white" : e.nativeEvent.target.style.backgroundColor = "#1a75ff";
   }
+
   function toggleForm() {
     const form = document.getElementById("form") as HTMLFormElement;
     const addButton = document.getElementById('addButton') as HTMLButtonElement;
@@ -188,7 +184,6 @@ function App() {
     const formNote = document.getElementById('form') as HTMLFormElement;
     const editNote = document.getElementById('editNote') as HTMLFormElement;
     const editTitle = document.getElementById("titleedit") as HTMLTextAreaElement;
-    const editText = document.getElementById("textedit") as HTMLTextAreaElement;
     const addButton = document.getElementById('addButton') as HTMLButtonElement;
     let divInput = document.getElementById('divInput') as HTMLDivElement;
     let pre = document.getElementById('pre') as HTMLDivElement;
@@ -200,16 +195,13 @@ function App() {
       const objFromStore = arrNoteObj.filter((e: any) => +idNote === e.id && e);
       editTitle.value = objFromStore[0].title;
       setAreaTitle(objFromStore[0].title);
-
       const valInput = objFromStore[0].text.replaceAll(regex, "<mark>$&</mark>");
       divInput.innerHTML = valInput;
       pre.innerHTML = valInput;
       currentDiv.current = valInput;
-
       const findHashTag = divInput.textContent?.match(regex);
       setHashTags(findHashTag);
       currentHashTag.current = objFromStore[0].hashTag;
-
     }
   }
 
@@ -224,6 +216,9 @@ function App() {
     addButton.style.display === "none" ? addButton.style.display = "block" : addButton.style.display = "none";
   }
 
+  //delete double tags
+  const arrHashTags = arrNoteObj?.map((e: any) => e.hashTag.map((el: any) => el)).flat().reduce((acum: Array<string>, curr: string) => [...acum.filter((e: any) => e !== curr), curr], []);
+
   return (
     <div className="App">
       <header className="App-header">
@@ -231,34 +226,57 @@ function App() {
           New notes:
           <br />
           <label id='taglist'>All tags:
-            {arrNoteObj?.map((e: any) =>
-              <span key={e.id} id={e.id} style={{ backgroundColor: `${colorToggler === true ? "red" : ""}` }} onClick={findNote}>
-                {e.hashTag ? spaceBetween + e.hashTag.join(' ') + spaceBetween : null}
-              </span>)}
+            {arrHashTags?.map((e: any, index: string) => <span key={index} id={index} onClick={findNote} style={{ marginLeft: "3px", borderRadius: "4px", padding: "2px" }}>{e}</span>)}
           </label>
           <ul>
-            {arrNoteObj?.map((e: any) =>
-              <div key={e.id} id='topNotes'>
-                <div id="notes" key={e.id}>
-                  <div id='data'>
-                    Title: {e.title}
-                    <br />
-                    Text:
-                    <br />
-                    {e.text}
+            {ifActive ?
+              arrNoteObj.map((el: any) =>
+                el.hashTag.some((e: string) => pickedHashTag.current === e) &&
+                <div key={el.id} id='topNotes'>
+                  <div id="notes" key={el.id}>
+                    <div id='data'>
+                      Title: {el.title}
+                      <br />
+                      Text:
+                      <br />
+                      {el.text}
+                    </div>
+                    <div id='buttons'>
+                      <button id={el.id} onClick={showHideEdit}>Edit</button>
+                      <br />
+                      <br />
+                      <br />
+                      <button id={el.id} onClick={deleteNote}>Delete</button>
+                    </div>
                   </div>
-                  <div id='buttons'>
-                    <button id={e.id} onClick={showHideEdit}>Edit</button>
-                    <br />
-                    <br />
-                    <br />
-                    <button id={e.id} onClick={deleteNote}>Delete</button>
+                  <div id='hashTag' onClick={findNote} style={{ backgroundColor: `${colorToggler === true ? "yellow" : ""}` }} >
+                    <span>{el.hashTag}{spaceBetween}</span>
                   </div>
                 </div>
-                <div id='hashTag' onClick={findNote} style={{ backgroundColor: `${colorToggler === true ? "yellow" : ""}` }} >
-                  {e.hashTag}
-                </div>
-              </div>)}
+              )
+              :
+              arrNoteObj?.map((element: any) =>
+                <div key={element.id} id='topNotes'>
+                  <div id="notes" key={element.id}>
+                    <div id='data'>
+                      Title: {element.title}
+                      <br />
+                      Text:
+                      <br />
+                      {element.text}
+                    </div>
+                    <div id='buttons'>
+                      <button id={element.id} onClick={showHideEdit}>Edit</button>
+                      <br />
+                      <br />
+                      <br />
+                      <button id={element.id} onClick={deleteNote}>Delete</button>
+                    </div>
+                  </div>
+                  <div id='hashTag' onClick={findNote} style={{ backgroundColor: `${colorToggler === true ? "yellow" : ""}` }} >
+                    <span>{element.hashTag}{spaceBetween}</span>
+                  </div>
+                </div>)}
           </ul>
         </div>
         <div>
@@ -286,17 +304,12 @@ function App() {
                 <br />
                 Title:
                 <textarea name="titleedit" id="titleedit" cols={50} rows={1} style={{ resize: "none", display: 'flex', }} value={areaTitle} onChange={trackTitle}>
-
                 </textarea>
               </label>
               <label id='labelText'>
                 Text area:
-                {/* <textarea name="textedit" id="textedit" cols={50} rows={10} style={{ resize: "none", display: 'flex', }} onInput={highlightWords}><div>asd</div></textarea>
-                <input type="text" /> */}
                 <div id='pre'></div>
                 <div contentEditable={true} id='divInput' unselectable='on' onScroll={scrollMinor} spellCheck="false" onInput={trackDivInput}></div>
-                {/* <input type='text' value={divText}></input> */}
-
               </label>
               <button type='submit'>Update</button>
               <input type="button" id='cancelButton' value="Cancel" onClick={cancelEdit} />
