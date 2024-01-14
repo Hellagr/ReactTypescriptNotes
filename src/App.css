@@ -25,7 +25,7 @@
 }
 
 #topNotes {
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 #notes {
@@ -48,6 +48,7 @@
 
 #hashTag {
   color: rgb(117, 117, 117);
+  margin-top: 2px;
 }
 
 #notes::-webkit-scrollbar {
@@ -67,13 +68,12 @@ ul {
 }
 
 #titleinput {
-  margin-bottom: 16px;
   border-radius: 5px;
   border: black 1px solid;
 }
 #textinput {
   border: black 1px solid;
-  margin-bottom: 16px;
+  margin-bottom: 5px;
   border-radius: 5px;
 }
 
@@ -94,6 +94,7 @@ ul {
   caret-color: black;
   white-space: break-spaces;
   word-wrap: break-word;
+  margin-bottom: 5px;
 }
 
 #divInput > mark {

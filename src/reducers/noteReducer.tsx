@@ -43,6 +43,15 @@ export const noteReducer = (state: any = initialState, action: any) => {
             return ([...state, action.payload]);
         case "ADD_NOTE":
             return ([...state, state[0].push(action.payload)]);
+        case "UPDATE_NOTE":
+            return ([...state, state[0].map((e: any) => {
+                if (e.id === +action.payload.id) {
+                    e.title = action.payload.title ? action.payload.title : e.title;
+                    e.text = action.payload.text ? action.payload.text : e.text;
+                    e.hashTag = action.payload.hashTag ? action.payload.hashTag : e.hashTag;
+                }
+
+            })]);
         case "DELETE_NOTE":
             return ([state[0].filter((e: any) => e.id !== +action.payload)]);
         default:
