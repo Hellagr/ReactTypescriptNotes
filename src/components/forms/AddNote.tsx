@@ -1,7 +1,12 @@
-import { MutableRefObject } from 'react'
+import { MutableRefObject, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { addNoteAction } from '../../actions/action';
 import { store } from '../../store/store';
+import { Button } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import Fade from '@mui/material/Fade';
+import Box from '@mui/material/Box';
+
 
 interface AddNoteProps {
     regex: RegExp
@@ -19,6 +24,7 @@ interface AddNoteProps {
 
 function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, updateHashTags, areaTitle, updateAreaTitle, areaText, updateAreaText, trackTitle }: AddNoteProps) {
 
+    const [checked, setChecked] = useState<boolean>(false);
     const dispatch = useDispatch();
 
 
@@ -63,31 +69,37 @@ function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, u
     }
 
     function toggleForm() {
+        setChecked((prev) => !prev);
         const form = document.getElementById("form") as HTMLFormElement;
         const addButton = document.getElementById('addButton') as HTMLButtonElement;
-        addButton.style.display === "none" ? addButton.style.display = "block" : addButton.style.display = "none";
+        addButton.style.display === "none" ? addButton.style.display = "flex" : addButton.style.display = "none";
         form.style.display === "none" ? form.style.display = "block" : form.style.display = "none";
+        updateAreaTitle("");
+        updateAreaText("");
+        currentHashTag.current = [];
     }
 
     return (
         <>
-            <div>
-                <button id='addButton' onClick={toggleForm} style={{ marginRight: "20px", }}>Add note +</button>
-            </div>
-            <form id={"form"} onSubmit={submitFunc} style={{ display: 'none', paddingTop: '50px' }}>
-                <label>
-                    Title:
-                    <textarea name="titleinput" id="titleinput" cols={50} rows={1} style={{ resize: "none", display: 'flex', }} value={areaTitle} onChange={trackTitle}></textarea>
-                </label>
-                <label>
-                    Text area:
-                    <textarea name="textinput" id="textinput" cols={50} rows={10} style={{ resize: "none", display: 'flex', }} value={areaText} onChange={trackText}></textarea>
-                    <button type='submit'>Submit</button>
-                    <input type="button" id='cancelButton' value="Cancel" onClick={toggleForm} />
-                </label>
-                <br />
-                {currentHashTag.current ? <span style={{ marginRight: "3px" }}>{currentHashTag.current}</span> : null}
-            </form>
+            <Button variant="contained" color="success" id='addButton' size='small' startIcon={<AddIcon />} onClick={toggleForm} style={{ marginRight: "20px", }}>Add note</Button>
+            <Box>
+                <Fade in={checked}>
+                    <form id="form" onSubmit={submitFunc} style={{ display: 'none', paddingTop: '50px' }}>
+                        <label>
+                            Title:
+                            <textarea name="titleinput" id="titleinput" cols={50} rows={1} style={{ resize: "none", display: 'flex', }} value={areaTitle} onChange={trackTitle}></textarea>
+                        </label>
+                        <label>
+                            Text area:
+                            <textarea name="textinput" id="textinput" cols={50} rows={10} style={{ resize: "none", display: 'flex', }} value={areaText} onChange={trackText}></textarea>
+                            <Button variant="contained" color="success" size='small' type='submit'>Submit</Button>
+                            <Button variant="contained" color="warning" size='small' id='cancelButton' onClick={toggleForm}>Cancel</Button>
+                        </label>
+                        <br />
+                        {currentHashTag.current ? currentHashTag.current : null}
+                    </form>
+                </Fade>
+            </Box>
         </>
     )
 }

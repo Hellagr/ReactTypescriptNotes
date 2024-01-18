@@ -1,7 +1,12 @@
 import { MutableRefObject, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Button, Collapse } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { TransitionGroup } from 'react-transition-group';
 
 interface AllNoteProps {
+    updateChecked: (update: any) => void
     regex: RegExp
     currentTitle: MutableRefObject<string>
     currentText: MutableRefObject<string>
@@ -11,7 +16,7 @@ interface AllNoteProps {
     updateAreaTitle: (update: string) => void
 }
 
-function AllNotes({ regex, currentTitle, currentText, currentHashTag, currentNoteId, updateHashTags, updateAreaTitle }: AllNoteProps) {
+function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHashTag, currentNoteId, updateHashTags, updateAreaTitle }: AllNoteProps) {
 
     const dispatch = useDispatch();
     const arrNoteObj = useSelector((state: any) => state.note[0]);
@@ -24,7 +29,7 @@ function AllNotes({ regex, currentTitle, currentText, currentHashTag, currentNot
     const deleteNote = (event: any) => {
         event.preventDefault();
         const idNote: number = event.target.id;
-        dispatch({ type: "DELETE_NOTE", payload: idNote })
+        dispatch({ type: "DELETE_NOTE", payload: +idNote })
         const request = window.indexedDB.open("Database", 1);
         request.onsuccess = (event: Event) => {
             const db = (event.target as IDBOpenDBRequest).result as IDBDatabase;
@@ -45,6 +50,7 @@ function AllNotes({ regex, currentTitle, currentText, currentHashTag, currentNot
     }
 
     function showHideEdit(e: any) {
+        updateChecked((prev: boolean) => !prev);
         const idNote = e.target.id;
         currentNoteId.current = +idNote;
 
@@ -58,11 +64,11 @@ function AllNotes({ regex, currentTitle, currentText, currentHashTag, currentNot
         if (formNote.style.display === 'block') {
             alert("Finish the creating note!")
         } else {
-            addButton.style.display === "none" ? addButton.style.display = "block" : addButton.style.display = "none";
+            addButton.style.display === "none" ? addButton.style.display = "flex" : addButton.style.display = "none";
             editNote.style.display === "none" ? editNote.style.display = "block" : editNote.style.display = "none";
             const objFromStore = arrNoteObj.filter((e: any) => +idNote === e.id && e);
             editTitle.value = objFromStore[0].title;
-            editTitle.value = currentTitle.current;
+            currentTitle.current = objFromStore[0].title;
             updateAreaTitle(objFromStore[0].title);
             const valInput = objFromStore[0].text.replaceAll(regex, "<mark>$&</mark>");
             divInput.innerHTML = valInput;
@@ -86,63 +92,71 @@ function AllNotes({ regex, currentTitle, currentText, currentHashTag, currentNot
                 {arrHashTags?.map((e: any, index: string) => <span key={index} id={index} onClick={findNote} style={{ marginLeft: "3px", borderRadius: "4px", padding: "2px" }}>{e}</span>)}
             </label>
             <ul>
-                {ifActive ?
-                    //If a user start searching a note through a hashTag
-                    arrNoteObj.map((el: any) =>
-                        el.hashTag.some((e: string) => pickedHashTag.current === e) &&
-                        <div key={el.id} id='topNotes'>
-                            <div id="notes" key={el.id}>
-                                <div id='data'>
-                                    Title: {el.title}
-                                    <br />
-                                    Text:
-                                    <br />
-                                    {el.text}
+                <TransitionGroup>
+                    {ifActive ?
+                        //If a user start searching a note through a hashTag
+                        arrNoteObj.map((el: any) =>
+                            el.hashTag.some((e: string) => pickedHashTag.current === e) &&
+                            <Collapse key={el.id}>
+                                <div key={el.id} id='topNotes'>
+                                    <div id="notes" key={el.id}>
+                                        <div id='data'>
+                                            Title: {el.title}
+                                            <br />
+                                            Text:
+                                            <br />
+                                            {el.text}
+                                        </div>
+                                        <div id='buttons'>
+                                            <Button variant="contained" color="info" size="small" startIcon={<EditIcon />} id={el.id} onClick={showHideEdit}>Edit</Button>
+                                            <br />
+                                            <br />
+                                            <br />
+                                            <Button variant="contained" color="error" size="small" startIcon={<DeleteIcon />} id={el.id} onClick={deleteNote}>Delete</Button>
+                                        </div>
+                                    </div>
+                                    <div id='hashTag'>
+                                        <span onClick={findNote}>
+                                            {el.hashTag.map((e: string, index: string) => <span key={index} style={{ marginLeft: "3px", borderRadius: "3px", padding: "1px" }}>{e}</span>)}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div id='buttons'>
-                                    <button id={el.id} onClick={showHideEdit}>Edit</button>
-                                    <br />
-                                    <br />
-                                    <br />
-                                    <button id={el.id} onClick={deleteNote}>Delete</button>
+                            </Collapse>
+                        )
+                        :
+                        //All notes
+                        arrNoteObj?.map((element: any) =>
+                            <Collapse key={element.id}>
+                                <div key={element?.id} id='topNotes'>
+                                    <div id="notes" key={element?.id}>
+                                        <div id='data'>
+                                            Title: {element?.title}
+                                            <br />
+                                            Text:
+                                            <br />
+                                            {element?.text}
+                                        </div>
+                                        <div id='buttons'>
+                                            <Button variant="contained" color="info" size="small" startIcon={<EditIcon />} id={element?.id} onClick={showHideEdit}>Edit</Button>
+                                            <br />
+                                            <br />
+                                            <br />
+                                            <Button variant="contained" color="error" size="small" startIcon={<DeleteIcon />} id={element?.id} onClick={deleteNote}>Delete</Button>
+                                        </div>
+                                    </div>
+                                    <div id='hashTag'>
+                                        <span onClick={findNote}>{element?.hashTag?.map((e: string, index: string) => <span key={index} style={{ marginLeft: "3px", borderRadius: "3px", padding: "1px" }}>
+                                            {e}
+                                        </span>)}
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div id='hashTag'>
-                                <span onClick={findNote}>
-                                    {el.hashTag.map((e: string, index: string) => <span key={index} style={{ marginLeft: "3px", borderRadius: "3px", padding: "1px" }}>{e}</span>)}
-                                </span>
-                            </div>
-                        </div>
-                    )
-                    :
-                    //All notes
-                    arrNoteObj?.map((element: any) =>
-                        <div key={element?.id} id='topNotes'>
-                            <div id="notes" key={element?.id}>
-                                <div id='data'>
-                                    Title: {element?.title}
-                                    <br />
-                                    Text:
-                                    <br />
-                                    {element?.text}
-                                </div>
-                                <div id='buttons'>
-                                    <button id={element?.id} onClick={showHideEdit}>Edit</button>
-                                    <br />
-                                    <br />
-                                    <br />
-                                    <button id={element?.id} onClick={deleteNote}>Delete</button>
-                                </div>
-                            </div>
-                            <div id='hashTag'>
-                                <span onClick={findNote}>{element?.hashTag?.map((e: string, index: string) => <span key={index} style={{ marginLeft: "3px", borderRadius: "3px", padding: "1px" }}>
-                                    {e}
-                                </span>)}
-                                </span>
-                            </div>
-                        </div>)}
-            </ul>
-        </div>
+                            </Collapse>
+                        )
+                    }
+                </TransitionGroup>
+            </ul >
+        </div >
     )
 }
 

@@ -15,9 +15,12 @@
 
 #addButton {
   margin-top: 58px;
-  font-size: larger;
-  border-radius: 5px;
-  border: solid black 1px;
+  font-size: medium;
+}
+
+#form {
+  transition-duration: 500ms;
+  transition-property: margin-right;
 }
 
 #cancelButton {

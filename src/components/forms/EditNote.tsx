@@ -1,9 +1,13 @@
 import { MutableRefObject } from 'react';
 import { updateNoteAction } from '../../actions/action';
 import { useDispatch } from 'react-redux';
-
+import { Button } from '@mui/material';
+import Fade from '@mui/material/Fade';
+import Box from '@mui/material/Box';
 
 interface EditNoteProps {
+    checked: boolean
+    updateChecked: (update: any) => void
     regex: RegExp
     currentTitle: MutableRefObject<string>
     currentText: MutableRefObject<string>
@@ -16,7 +20,7 @@ interface EditNoteProps {
     trackTitle: any
 }
 
-function EditNote({ regex, currentTitle, currentText, currentHashTag, currentNoteId, updateHashTags, areaTitle, updateAreaTitle, updateAreaText, trackTitle }: EditNoteProps) {
+function EditNote({ checked, updateChecked, regex, currentTitle, currentText, currentHashTag, currentNoteId, updateHashTags, areaTitle, updateAreaTitle, updateAreaText, trackTitle }: EditNoteProps) {
 
     const dispatch = useDispatch();
 
@@ -76,33 +80,39 @@ function EditNote({ regex, currentTitle, currentText, currentHashTag, currentNot
     }
 
     function cancelEdit() {
+        updateChecked((prev: any) => !prev);
         const editNote = document.getElementById("editNote") as HTMLFormElement;
         const addButton = document.getElementById('addButton') as HTMLButtonElement;
         editNote.style.display === "none" ? editNote.style.display = "block" : editNote.style.display = "none";
-        addButton.style.display === "none" ? addButton.style.display = "block" : addButton.style.display = "none";
+        addButton.style.display === "none" ? addButton.style.display = "flex" : addButton.style.display = "none";
         updateAreaTitle("");
+        currentHashTag.current = [];
     }
 
     return (
-        <form id='editNote' onSubmit={updateNote} style={{ display: 'none', paddingTop: '50px' }}>
-            <label>
-                Edit Note
-                <br />
-                Title:
-                <textarea name="titleedit" id="titleedit" cols={50} rows={1} style={{ resize: "none", display: 'flex', }} value={areaTitle} onChange={trackTitle}>
-                </textarea>
-            </label>
-            <label id='labelText'>
-                Text area:
-                <div id='pre'></div>
-                <div contentEditable={true} id='divInput' unselectable='on' onScroll={scrollMinor} spellCheck="false" onInput={trackDivInput}></div>
-            </label>
-            <button type='submit'>Update</button>
-            <input type="button" id='cancelButton' value="Cancel" onClick={cancelEdit} />
-            <div>
-                {currentHashTag.current ? currentHashTag.current : null}
-            </div>
-        </form>
+        <Box>
+            <Fade in={checked}>
+                <form id='editNote' onSubmit={updateNote} style={{ display: 'none', paddingTop: '50px' }}>
+                    <label>
+                        Edit Note
+                        <br />
+                        Title:
+                        <textarea name="titleedit" id="titleedit" cols={50} rows={1} style={{ resize: "none", display: 'flex', }} value={areaTitle} onChange={trackTitle}>
+                        </textarea>
+                    </label>
+                    <label id='labelText'>
+                        Text area:
+                        <div id='pre'></div>
+                        <div contentEditable={true} id='divInput' unselectable='on' onScroll={scrollMinor} spellCheck="false" onInput={trackDivInput}></div>
+                    </label>
+                    <Button variant="contained" color="success" size='small' type='submit'>Submit</Button>
+                    <Button variant="contained" color="warning" size='small' id='cancelButton' onClick={cancelEdit}>Cancel</Button>
+                    <div>
+                        {currentHashTag.current ? currentHashTag.current : null}
+                    </div>
+                </form>
+            </Fade>
+        </Box>
     )
 }
 
