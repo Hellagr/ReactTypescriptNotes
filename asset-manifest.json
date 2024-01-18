@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/ReactTypescriptNotes/static/css/main.fde94494.css",
+    "main.js": "/ReactTypescriptNotes/static/js/main.70f92d42.js",
+    "static/js/988.ed3900e9.chunk.js": "/ReactTypescriptNotes/static/js/988.ed3900e9.chunk.js",
+    "index.html": "/ReactTypescriptNotes/index.html",
+    "main.fde94494.css.map": "/ReactTypescriptNotes/static/css/main.fde94494.css.map",
+    "main.70f92d42.js.map": "/ReactTypescriptNotes/static/js/main.70f92d42.js.map",
+    "988.ed3900e9.chunk.js.map": "/ReactTypescriptNotes/static/js/988.ed3900e9.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.fde94494.css",
+    "static/js/main.70f92d42.js"
+  ]
+}
