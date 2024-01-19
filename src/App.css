@@ -18,11 +18,6 @@
   font-size: medium;
 }
 
-#form {
-  transition-duration: 500ms;
-  transition-property: margin-right;
-}
-
 #cancelButton {
   margin-left: 10px;
 }

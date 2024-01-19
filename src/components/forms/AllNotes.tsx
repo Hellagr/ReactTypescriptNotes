@@ -1,4 +1,4 @@
-import { MutableRefObject, useRef, useState } from 'react';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Collapse } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -22,8 +22,8 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
     const arrNoteObj = useSelector((state: any) => state.note[0]);
 
     const currentDiv = useRef<string>("");
-    const pickedHashTag = useRef<string>();
     const [ifActive, setIfActive] = useState<boolean>(false);
+    const [currHash, setCurrHash] = useState<string[]>([]);
 
     // Delete obj
     const deleteNote = (event: any) => {
@@ -44,10 +44,12 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
     };
 
     function findNote(e: any) {
-        pickedHashTag.current = e.target.textContent;
-        ifActive === true ? setIfActive(false) : setIfActive(true);
-        ifActive === true ? e.nativeEvent.target.style.backgroundColor = "white" : e.nativeEvent.target.style.backgroundColor = "#1a75ff";
+        const findNoteTag: any = e.target.textContent;
+        currHash.includes(findNoteTag) ? setCurrHash(currHash.filter((e: any) => e !== findNoteTag)) : setCurrHash([...currHash, findNoteTag]);
+        e.target.style.backgroundColor === "" ? e.target.style.backgroundColor = "#1a75ff" : e.target.style.backgroundColor = "";
     }
+
+    useEffect(() => currHash.length > 0 ? setIfActive(true) : setIfActive(false), [currHash.length]);
 
     function showHideEdit(e: any) {
         updateChecked((prev: boolean) => !prev);
@@ -93,10 +95,10 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
             </label>
             <ul>
                 <TransitionGroup>
-                    {ifActive ?
+                    {ifActive === true ?
                         //If a user start searching a note through a hashTag
                         arrNoteObj.map((el: any) =>
-                            el.hashTag.some((e: string) => pickedHashTag.current === e) &&
+                            el.hashTag.some((e: string) => currHash.some((el: string) => el === e)) &&
                             <Collapse key={el.id}>
                                 <div key={el.id} id='topNotes'>
                                     <div id="notes" key={el.id}>
@@ -116,11 +118,12 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
                                         </div>
                                     </div>
                                     <div id='hashTag'>
-                                        <span onClick={findNote}>
+                                        <span >
                                             {el.hashTag.map((e: string, index: string) => <span key={index} style={{ marginLeft: "3px", borderRadius: "3px", padding: "1px" }}>{e}</span>)}
                                         </span>
                                     </div>
                                 </div>
+
                             </Collapse>
                         )
                         :
@@ -145,10 +148,7 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
                                         </div>
                                     </div>
                                     <div id='hashTag'>
-                                        <span onClick={findNote}>{element?.hashTag?.map((e: string, index: string) => <span key={index} style={{ marginLeft: "3px", borderRadius: "3px", padding: "1px" }}>
-                                            {e}
-                                        </span>)}
-                                        </span>
+                                        {element.hashTag?.map((e: string, index: string) => <span key={index} style={{ marginLeft: "3px", borderRadius: "3px", padding: "1px" }}>{e}</span>)}
                                     </div>
                                 </div>
                             </Collapse>
