@@ -1,11 +1,11 @@
 .App {
   display: flex;
-  justify-content: start;
+  justify-content: center;
 }
 
 .App-header {
   display: flex;
-  justify-content: start;
+  justify-content: center;
   width: 1200px;
 }
 
@@ -24,6 +24,7 @@
 
 #topNotes {
   margin-bottom: 10px;
+  width: 350px;
 }
 
 #notes {
@@ -32,7 +33,6 @@
   border: solid black 1px;
   border-radius: 5px;
   padding: 10px;
-  width: 500px;
   height: 150px;
 }
 
@@ -42,6 +42,11 @@
   margin: 0;
   word-break: break-word;
   overflow: auto;
+}
+
+#deletedData {
+  overflow: auto;
+  height: 130px;
 }
 
 #hashTag {
@@ -54,8 +59,8 @@
 }
 
 ul {
-  padding-left: 20px;
-  padding-right: 20px;
+  padding: 0;
+  width: 350px;
 }
 
 #buttons {
@@ -75,6 +80,11 @@ ul {
   border-radius: 5px;
 }
 
+#titleedit {
+  border-radius: 5px;
+  border: black 1px solid;
+}
+
 #inpText {
   width: 250px;
   height: 150px;
@@ -83,11 +93,12 @@ ul {
 #divInput {
   color: transparent;
   background: transparent;
-  border: 1px solid gray;
+  border: black 1px solid;
+  border-radius: 5px;
   height: 150px;
   overflow: auto;
   padding: 2px;
-  width: 500px;
+  width: 350px;
   resize: none;
   caret-color: black;
   white-space: break-spaces;
@@ -106,11 +117,19 @@ ul {
   padding: 3px;
   pointer-events: none;
   height: 150px;
-  width: 500px;
+  width: 350px;
   white-space: break-spaces;
   word-wrap: break-word;
 }
 
 #pre > mark {
   background: rgba(255, 255, 0, 0.5);
+}
+
+.delPermanently {
+  color: #7a1818;
+}
+
+.delPermanently:hover {
+  transition: 0.3s;
 }

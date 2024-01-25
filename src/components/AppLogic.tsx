@@ -2,7 +2,8 @@ import { useRef, useState } from 'react'
 import AddNote from './forms/AddNote';
 import EditNote from './forms/EditNote';
 import AllNotes from './forms/AllNotes';
-
+import { Grid } from '@mui/material';
+import DeletedNotes from './forms/DeletedNotes';
 
 function AppLogic() {
 
@@ -35,7 +36,7 @@ function AppLogic() {
         alert("This browser doesn't support IndexedDB");
     }
     //Open database 
-    const request = window.indexedDB.open("Database", 1);
+    const request = window.indexedDB.open("Database", 2);
     request.onerror = (e) => {
         console.error(`Error: ${e}`);
     };
@@ -53,14 +54,18 @@ function AppLogic() {
     return (
         <div className="App">
             <header className="App-header">
-                <AllNotes currentTitle={currentTitle} updateHashTags={updateHashTags} updateAreaTitle={updateAreaTitle} currentHashTag={currentHashTag} currentText={currentText} regex={regex} currentNoteId={currentNoteId} updateChecked={updateChecked} />
-                <div>
-                    <div >
+                <Grid container spacing={2}>
+                    <Grid item lg={4} md={6} sm={12} xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
                         <AddNote hashTags={hashTags} currentTitle={currentTitle} updateHashTags={updateHashTags} updateAreaTitle={updateAreaTitle} updateAreaText={updateAreaText} currentHashTag={currentHashTag} areaTitle={areaTitle} trackTitle={trackTitle} areaText={areaText} currentText={currentText} regex={regex} />
-
-                        <EditNote currentTitle={currentTitle} updateHashTags={updateHashTags} updateAreaTitle={updateAreaTitle} updateAreaText={updateAreaText} currentHashTag={currentHashTag} areaTitle={areaTitle} trackTitle={trackTitle} currentText={currentText} regex={regex} currentNoteId={currentNoteId} checked={checked} updateChecked={updateChecked} />
-                    </div>
-                </div>
+                        <EditNote currentTitle={currentTitle} updateHashTags={updateHashTags} updateAreaTitle={updateAreaTitle} updateAreaText={updateAreaText} currentHashTag={currentHashTag} areaTitle={areaTitle} trackTitle={trackTitle} currentText={currentText} regex={regex} currentNoteId={currentNoteId} checked={checked} updateChecked={updateChecked} areaText={areaText} />
+                    </Grid>
+                    <Grid item lg={4} md={6} sm={12} xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
+                        <AllNotes currentTitle={currentTitle} updateHashTags={updateHashTags} updateAreaTitle={updateAreaTitle} currentHashTag={currentHashTag} currentText={currentText} regex={regex} currentNoteId={currentNoteId} updateChecked={updateChecked} />
+                    </Grid>
+                    <Grid item lg={4} md={12} sm={12} xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
+                        <DeletedNotes />
+                    </Grid>
+                </Grid>
             </header>
         </div>
     )

@@ -5,6 +5,7 @@ import { Button } from '@mui/material';
 import Fade from '@mui/material/Fade';
 import Box from '@mui/material/Box';
 
+
 interface EditNoteProps {
     checked: boolean
     updateChecked: (update: any) => void
@@ -15,17 +16,19 @@ interface EditNoteProps {
     currentNoteId: MutableRefObject<number>
     updateHashTags: (update: string[] | null | undefined) => void
     areaTitle: string | undefined
+    areaText: string | undefined
     updateAreaTitle: (update: string) => void
     updateAreaText: (update: string) => void
     trackTitle: any
 }
 
-function EditNote({ checked, updateChecked, regex, currentTitle, currentText, currentHashTag, currentNoteId, updateHashTags, areaTitle, updateAreaTitle, updateAreaText, trackTitle }: EditNoteProps) {
+function EditNote({ checked, updateChecked, regex, currentTitle, currentText, currentHashTag, currentNoteId, updateHashTags, areaTitle, updateAreaTitle, areaText, updateAreaText, trackTitle }: EditNoteProps) {
 
     const dispatch = useDispatch();
 
     // Update note
     const updateNote = (e: any) => {
+        updateChecked((prev: any) => !prev);
         e.preventDefault();
         const idNote = currentNoteId.current;
         const titleValue = currentTitle.current;
@@ -54,9 +57,9 @@ function EditNote({ checked, updateChecked, regex, currentTitle, currentText, cu
         updateAreaText("");
         currentHashTag.current = undefined;
         const editNote = document.getElementById("editNote") as HTMLFormElement;
+        const formNote = document.getElementById('form') as HTMLFormElement;
+        formNote.style.display === "none" ? formNote.style.display = "block" : formNote.style.display = "none";
         editNote.style.display === "none" ? editNote.style.display = "block" : editNote.style.display = "none";
-        const addButton = document.getElementById('addButton') as HTMLButtonElement;
-        addButton.style.display === "none" ? addButton.style.display = "block" : addButton.style.display = "none";
     };
 
     function trackDivInput(e: any) {
@@ -82,9 +85,9 @@ function EditNote({ checked, updateChecked, regex, currentTitle, currentText, cu
     function cancelEdit() {
         updateChecked((prev: any) => !prev);
         const editNote = document.getElementById("editNote") as HTMLFormElement;
-        const addButton = document.getElementById('addButton') as HTMLButtonElement;
+        const formNote = document.getElementById('form') as HTMLFormElement;
+        formNote.style.display === "none" ? formNote.style.display = "block" : formNote.style.display = "none";
         editNote.style.display === "none" ? editNote.style.display = "block" : editNote.style.display = "none";
-        addButton.style.display === "none" ? addButton.style.display = "flex" : addButton.style.display = "none";
         updateAreaTitle("");
         currentHashTag.current = [];
     }
@@ -92,22 +95,27 @@ function EditNote({ checked, updateChecked, regex, currentTitle, currentText, cu
     return (
         <Box>
             <Fade in={checked}>
-                <form id='editNote' onSubmit={updateNote} style={{ display: 'none', paddingTop: '50px' }}>
+                <form id='editNote' onSubmit={updateNote} style={{ display: 'none', marginTop: '0.95rem' }}>
+                    <div>
+                        Edit note:
+                    </div>
                     <label>
-                        Edit Note
-                        <br />
                         Title:
-                        <textarea name="titleedit" id="titleedit" cols={50} rows={1} style={{ resize: "none", display: 'flex', }} value={areaTitle} onChange={trackTitle}>
+                        <br />
+                        {/* <TextField id="titleedit" value={areaTitle} onChange={trackTitle} label="Title" variant="outlined" size='small' fullWidth style={{ marginTop: "1rem" }} /> */}
+                        <textarea name="titleedit" id="titleedit" rows={1} style={{ resize: "none", display: 'flex', width: "350px" }} value={areaTitle} onChange={trackTitle}>
                         </textarea>
                     </label>
+                    {/* <TextField id="editText" label="Text area" variant="outlined" size='small' fullWidth value={areaText} onInput={trackDivInput} style={{ marginTop: "1rem" }}  /> */}
                     <label id='labelText'>
                         Text area:
-                        <div id='pre'></div>
+                        <div id='pre' ></div>
                         <div contentEditable={true} id='divInput' unselectable='on' onScroll={scrollMinor} spellCheck="false" onInput={trackDivInput}></div>
+
                     </label>
-                    <Button variant="contained" color="success" size='small' type='submit'>Submit</Button>
-                    <Button variant="contained" color="warning" size='small' id='cancelButton' onClick={cancelEdit}>Cancel</Button>
-                    <div>
+                    <Button variant="contained" color="success" size='small' type='submit' style={{ marginTop: "1rem" }}>Submit</Button>
+                    <Button variant="contained" color="warning" size='small' id='cancelButton' style={{ marginTop: "1rem" }} onClick={cancelEdit}>Cancel</Button>
+                    <div style={{ marginTop: "0.5rem" }}>
                         {currentHashTag.current ? currentHashTag.current : null}
                     </div>
                 </form>

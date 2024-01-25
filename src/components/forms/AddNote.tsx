@@ -1,12 +1,13 @@
-import { MutableRefObject, useState } from 'react'
+import { MutableRefObject } from 'react'
 import { useDispatch } from 'react-redux';
 import { addNoteAction } from '../../actions/action';
 import { store } from '../../store/store';
 import { Button } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import Fade from '@mui/material/Fade';
 import Box from '@mui/material/Box';
-
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateCalendar } from '@mui/x-date-pickers-pro';
+import Clock from 'react-live-clock';
 
 interface AddNoteProps {
     regex: RegExp
@@ -24,9 +25,7 @@ interface AddNoteProps {
 
 function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, updateHashTags, areaTitle, updateAreaTitle, areaText, updateAreaText, trackTitle }: AddNoteProps) {
 
-    const [checked, setChecked] = useState<boolean>(false);
     const dispatch = useDispatch();
-
 
     //Add object to store
     function submitFunc(e: any) {
@@ -40,7 +39,7 @@ function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, u
             const lastObjNumber = store.getState().note[0].length - 1;
             const lastObj = store.getState().note[0][lastObjNumber];
             //Add obj to a database
-            const request = window.indexedDB.open("Database", 1);
+            const request = window.indexedDB.open("Database", 2);
             request.onsuccess = (event) => {
                 const db = (event.target as IDBOpenDBRequest).result as IDBDatabase;
                 const transaction = db.transaction("notes", "readwrite");
@@ -68,38 +67,48 @@ function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, u
         currentHashTag.current = findHashTag;
     }
 
-    function toggleForm() {
-        setChecked((prev) => !prev);
-        const form = document.getElementById("form") as HTMLFormElement;
-        const addButton = document.getElementById('addButton') as HTMLButtonElement;
-        addButton.style.display === "none" ? addButton.style.display = "flex" : addButton.style.display = "none";
-        form.style.display === "none" ? form.style.display = "block" : form.style.display = "none";
-        updateAreaTitle("");
-        updateAreaText("");
-        currentHashTag.current = [];
-    }
+    // function toggleForm() {
+    //     setChecked((prev) => !prev);
+    //     const form = document.getElementById("form") as HTMLFormElement;
+    //     const addButton = document.getElementById('addButton') as HTMLButtonElement;
+    //     addButton.style.display === "none" ? addButton.style.display = "flex" : addButton.style.display = "none";
+    //     form.style.display === "none" ? form.style.display = "block" : form.style.display = "none";
+    //     updateAreaTitle("");
+    //     updateAreaText("");
+    //     currentHashTag.current = [];
+    // }
 
     return (
         <>
-            <Button variant="contained" color="success" id='addButton' size='small' startIcon={<AddIcon />} onClick={toggleForm} style={{ marginRight: "20px", }}>Add note</Button>
+            {/* <Button variant="contained" color="success" id='addButton' size='small' startIcon={<AddIcon />} onClick={toggleForm} style={{ marginRight: "20px", }}>Add note</Button> */}
             <Box>
-                <Fade in={checked}>
-                    <form id="form" onSubmit={submitFunc} style={{ display: 'none', paddingTop: '50px' }}>
-                        <label>
-                            Title:
-                            <textarea name="titleinput" id="titleinput" cols={50} rows={1} style={{ resize: "none", display: 'flex', }} value={areaTitle} onChange={trackTitle}></textarea>
-                        </label>
-                        <label>
-                            Text area:
-                            <textarea name="textinput" id="textinput" cols={50} rows={10} style={{ resize: "none", display: 'flex', }} value={areaText} onChange={trackText}></textarea>
-                            <Button variant="contained" color="success" size='small' type='submit'>Submit</Button>
-                            <Button variant="contained" color="warning" size='small' id='cancelButton' onClick={toggleForm}>Cancel</Button>
-                        </label>
-                        <br />
-                        {currentHashTag.current ? currentHashTag.current : null}
-                    </form>
-                </Fade>
-            </Box>
+                <form id="form" onSubmit={submitFunc} >
+                    <div >
+                        Add note:
+                    </div>
+                    <div style={{ marginTop: "1rem" }}></div>
+                    <label >
+                        Title:
+                        <textarea name="titleinput" id="titleinput" rows={1} style={{ resize: "none", display: "flex", width: "350px" }} value={areaTitle} onChange={trackTitle}></textarea>
+                    </label>
+                    <label>
+                        Text area:
+                        <textarea name="textinput" id="textinput" rows={10} style={{ resize: "none", display: "flex", width: "350px" }} value={areaText} onChange={trackText}></textarea>
+                        <Button variant="contained" color="success" size='small' type='submit'>Add note</Button>
+                        {/* <Button variant="contained" color="warning" size='small' id='cancelButton' onClick={toggleForm}>Cancel</Button> */}
+                    </label>
+                    <br />
+                    <div style={{ width: "350px", wordBreak: "break-word", marginLeft: "3px", borderRadius: "3px", padding: "1px" }}>
+                        {currentHashTag.current ? currentHashTag.current.join(" ") : null}
+                    </div>
+                </form>
+                <div style={{ marginTop: "10px", justifyContent: "center", display: "flex", fontSize: 30, border: "2px gray solid", borderRadius: "5px" }}>
+                    <Clock format="HH:mm:ss" interval={1000} ticking={true} />
+                </div>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DateCalendar showDaysOutsideCurrentMonth fixedWeekNumber={6} />
+                </LocalizationProvider>
+            </Box >
         </>
     )
 }

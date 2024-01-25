@@ -4,6 +4,7 @@ import { Button, Collapse } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { TransitionGroup } from 'react-transition-group';
+import { addDeletedNote } from '../../actions/action';
 
 interface AllNoteProps {
     updateChecked: (update: any) => void
@@ -20,7 +21,8 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
 
     const dispatch = useDispatch();
     const arrNoteObj = useSelector((state: any) => state.note[0]);
-
+    const arrDeletedNoteObj = useSelector((state: any) => state.deletedNote[0]);
+    console.log('arrDeletedNoteObj::: ', arrDeletedNoteObj);
     const currentDiv = useRef<string>("");
     const [ifActive, setIfActive] = useState<boolean>(false);
     const [currHash, setCurrHash] = useState<string[]>([]);
@@ -29,14 +31,31 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
     const deleteNote = (event: any) => {
         event.preventDefault();
         const idNote: number = event.target.id;
-        dispatch({ type: "DELETE_NOTE", payload: +idNote })
-        const request = window.indexedDB.open("Database", 1);
+        dispatch({ type: "DELETE_NOTE", payload: +idNote });
+        const request = window.indexedDB.open("Database", 2);
         request.onsuccess = (event: Event) => {
             const db = (event.target as IDBOpenDBRequest).result as IDBDatabase;
+
             const transactionNotes = db.transaction('notes', 'readwrite');
             const objectStoreNotes = transactionNotes.objectStore('notes');
-            let id: number = +idNote;
-            objectStoreNotes.delete(id);
+
+            const getRequestNotes = objectStoreNotes.get(+idNote);
+            getRequestNotes.onsuccess = () => {
+                const data = getRequestNotes.result;
+                data.deletetime = new Date().toString();
+                dispatch(addDeletedNote(data.id, data.title, data.text, data.deletetime, data.hashTag));
+                const requestDeletedNotes = window.indexedDB.open("Database", 2);
+                requestDeletedNotes.onsuccess = () => {
+                    const transactionDeletedNotes = db.transaction('deletedNotes', 'readwrite');
+                    const objectStoreDeletedNotes = transactionDeletedNotes.objectStore('deletedNotes');
+                    objectStoreDeletedNotes.add(data, data.id);
+                };
+                let id: number = +idNote;
+                objectStoreNotes.delete(id);
+                requestDeletedNotes.onerror = (e) => {
+                    console.error(`Error: ${e}`);
+                };
+            };
         };
         request.onerror = (e) => {
             console.error(`Error: ${e}`);
@@ -53,34 +72,36 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
 
     function showHideEdit(e: any) {
         updateChecked((prev: boolean) => !prev);
-        const idNote = e.target.id;
+        let idNote = e.target.id;
         currentNoteId.current = +idNote;
 
         const formNote = document.getElementById('form') as HTMLFormElement;
         const editNote = document.getElementById('editNote') as HTMLFormElement;
         const editTitle = document.getElementById("titleedit") as HTMLTextAreaElement;
-        const addButton = document.getElementById('addButton') as HTMLButtonElement;
         let divInput = document.getElementById('divInput') as HTMLDivElement;
         let pre = document.getElementById('pre') as HTMLDivElement;
 
-        if (formNote.style.display === 'block') {
-            alert("Finish the creating note!")
-        } else {
-            addButton.style.display === "none" ? addButton.style.display = "flex" : addButton.style.display = "none";
-            editNote.style.display === "none" ? editNote.style.display = "block" : editNote.style.display = "none";
-            const objFromStore = arrNoteObj.filter((e: any) => +idNote === e.id && e);
-            editTitle.value = objFromStore[0].title;
-            currentTitle.current = objFromStore[0].title;
-            updateAreaTitle(objFromStore[0].title);
-            const valInput = objFromStore[0].text.replaceAll(regex, "<mark>$&</mark>");
-            divInput.innerHTML = valInput;
-            currentText.current = divInput.textContent!;
-            pre.innerHTML = valInput;
-            currentDiv.current = valInput;
-            const findHashTag = divInput.textContent?.match(regex);
-            updateHashTags(findHashTag);
-            currentHashTag.current = objFromStore[0].hashTag;
+        formNote.style.display === "none" ? formNote.style.display = "block" : formNote.style.display = "none";
+        editNote.style.display === "none" ? editNote.style.display = "block" : editNote.style.display = "none";
+
+        const objFromStore = arrNoteObj.filter((el: any) => el.id === +idNote && el);
+
+        editTitle.value = objFromStore[0].title;
+        currentTitle.current = objFromStore[0].title;
+        updateAreaTitle(objFromStore[0].title);
+        const valInput = objFromStore[0].text.replaceAll(regex, "<mark>$&</mark>");
+        divInput.innerHTML = valInput;
+        currentText.current = divInput.textContent!;
+        pre.innerHTML = valInput;
+        currentDiv.current = valInput;
+        const findHashTag = divInput.textContent?.match(regex);
+        updateHashTags(findHashTag);
+        currentHashTag.current = objFromStore[0].hashTag;
+        if (editNote.style.display === "none") {
+            updateAreaTitle("");
+            currentHashTag.current = [];
         }
+
     }
 
     //delete double tags
@@ -88,7 +109,7 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
 
     return (
         <div id='allNotes'>
-            New notes:
+            Created notes:
             <br />
             <label id='taglist'>All tags:
                 {arrHashTags?.map((e: any, index: string) => <span key={index} id={index} onClick={findNote} style={{ marginLeft: "3px", borderRadius: "4px", padding: "2px" }}>{e}</span>)}
@@ -140,15 +161,15 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
                                             {element?.text}
                                         </div>
                                         <div id='buttons'>
-                                            <Button variant="contained" color="info" size="small" startIcon={<EditIcon />} id={element?.id} onClick={showHideEdit}>Edit</Button>
+                                            <Button variant="contained" color="info" size="small" id={element?.id} onClick={showHideEdit}>Edit</Button>
                                             <br />
                                             <br />
                                             <br />
-                                            <Button variant="contained" color="error" size="small" startIcon={<DeleteIcon />} id={element?.id} onClick={deleteNote}>Delete</Button>
+                                            <Button variant="contained" color="error" size="small" id={element?.id} onClick={deleteNote}>Delete</Button>
                                         </div>
                                     </div>
                                     <div id='hashTag'>
-                                        {element.hashTag?.map((e: string, index: string) => <span key={index} style={{ marginLeft: "3px", borderRadius: "3px", padding: "1px" }}>{e}</span>)}
+                                        {element.hashTag?.map((e: string, index: string) => <span key={index} style={{ marginLeft: "3px", borderRadius: "3px", padding: "1px", wordBreak: "break-word" }}>{e}</span>)}
                                     </div>
                                 </div>
                             </Collapse>
