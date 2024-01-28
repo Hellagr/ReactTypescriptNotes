@@ -5,9 +5,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { TransitionGroup } from 'react-transition-group';
 import { addDeletedNote } from '../../actions/action';
+import parse from 'html-react-parser';
 
 interface AllNoteProps {
     updateChecked: (update: any) => void
+    updateCheckedAdd: (update: any) => void
     regex: RegExp
     currentTitle: MutableRefObject<string>
     currentText: MutableRefObject<string>
@@ -15,14 +17,14 @@ interface AllNoteProps {
     currentNoteId: MutableRefObject<number>
     updateHashTags: (update: string[] | null | undefined) => void
     updateAreaTitle: (update: string) => void
+
 }
 
-function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHashTag, currentNoteId, updateHashTags, updateAreaTitle }: AllNoteProps) {
+function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHashTag, currentNoteId, updateHashTags, updateAreaTitle, updateCheckedAdd }: AllNoteProps) {
 
     const dispatch = useDispatch();
     const arrNoteObj = useSelector((state: any) => state.note[0]);
     const arrDeletedNoteObj = useSelector((state: any) => state.deletedNote[0]);
-    console.log('arrDeletedNoteObj::: ', arrDeletedNoteObj);
     const currentDiv = useRef<string>("");
     const [ifActive, setIfActive] = useState<boolean>(false);
     const [currHash, setCurrHash] = useState<string[]>([]);
@@ -72,6 +74,7 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
 
     function showHideEdit(e: any) {
         updateChecked((prev: boolean) => !prev);
+        updateCheckedAdd((prev: boolean) => !prev);
         let idNote = e.target.id;
         currentNoteId.current = +idNote;
 
@@ -83,6 +86,7 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
 
         formNote.style.display === "none" ? formNote.style.display = "block" : formNote.style.display = "none";
         editNote.style.display === "none" ? editNote.style.display = "block" : editNote.style.display = "none";
+        editNote.style.visibility === "hidden" ? editNote.style.visibility = "visible" : editNote.style.visibility = "hidden";
 
         const objFromStore = arrNoteObj.filter((el: any) => el.id === +idNote && el);
 
@@ -107,6 +111,8 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
     //delete double tags
     const arrHashTags = arrNoteObj?.map((e: any) => e?.hashTag?.map((el: any) => el)).flat().reduce((acum: Array<string>, curr: string) => [...acum.filter((e: any) => e !== curr), curr], []);
 
+
+
     return (
         <div id='allNotes'>
             Created notes:
@@ -123,12 +129,9 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
                             <Collapse key={el.id}>
                                 <div key={el.id} id='topNotes'>
                                     <div id="notes" key={el.id}>
-                                        <div id='data'>
-                                            Title: {el.title}
-                                            <br />
-                                            Text:
-                                            <br />
-                                            {el.text}
+                                        <div id='data' style={{ display: 'block' }}>
+                                            <div>Title: {el?.title}</div>
+                                            <div>Text: <br /> {parse(el?.text)}</div>
                                         </div>
                                         <div id='buttons'>
                                             <Button variant="contained" color="info" size="small" startIcon={<EditIcon />} id={el.id} onClick={showHideEdit}>Edit</Button>
@@ -153,12 +156,9 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
                             <Collapse key={element.id}>
                                 <div key={element?.id} id='topNotes'>
                                     <div id="notes" key={element?.id}>
-                                        <div id='data'>
-                                            Title: {element?.title}
-                                            <br />
-                                            Text:
-                                            <br />
-                                            {element?.text}
+                                        <div id='data' style={{ display: 'block' }}>
+                                            <div>Title: {element?.title}</div>
+                                            <div>Text: <br /> {parse(element?.text)}</div>
                                         </div>
                                         <div id='buttons'>
                                             <Button variant="contained" color="info" size="small" id={element?.id} onClick={showHideEdit}>Edit</Button>

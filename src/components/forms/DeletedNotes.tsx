@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Collapse } from '@mui/material';
 import { TransitionGroup } from 'react-transition-group';
+import parse from 'html-react-parser';
 
 function DeletedNotes() {
     const dispatch = useDispatch();
@@ -12,10 +13,7 @@ function DeletedNotes() {
     function deleteNote(event: any) {
         event.preventDefault();
         const idNote: number = +event.target.id;
-
-        console.log('idNote::: ', idNote);
         dispatch({ type: "DELETE_NOTE_PERMANENTLY", payload: +idNote });
-
         const request = window.indexedDB.open("Database", 2);
         request.onsuccess = (event: Event) => {
             const db = (event.target as IDBOpenDBRequest).result as IDBDatabase;
@@ -43,12 +41,9 @@ function DeletedNotes() {
                         <div key={element.id} id='topNotes' style={{ borderRadius: "5px" }}>
                             <div id="notes" key={element.id} style={{ backgroundColor: "#cdcdcd", }}>
                                 <div>
-                                    <div id='deletedData'>
-                                        Title: {element.title}
-                                        <br />
-                                        Text:
-                                        <br />
-                                        {element.text}
+                                    <div id='deletedData' style={{ display: 'block' }}>
+                                        <div>Title: {element?.title}</div>
+                                        <div>Text: <br /> {parse(element?.text)}</div>
                                     </div>
                                     <div style={{ fontSize: "10px", height: "15px" }}>
                                         {'Deletion date: ' + element.deletetime}

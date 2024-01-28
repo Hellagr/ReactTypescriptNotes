@@ -9,6 +9,7 @@ import Box from '@mui/material/Box';
 interface EditNoteProps {
     checked: boolean
     updateChecked: (update: any) => void
+    updateCheckedAdd: (update: any) => void
     regex: RegExp
     currentTitle: MutableRefObject<string>
     currentText: MutableRefObject<string>
@@ -22,7 +23,7 @@ interface EditNoteProps {
     trackTitle: any
 }
 
-function EditNote({ checked, updateChecked, regex, currentTitle, currentText, currentHashTag, currentNoteId, updateHashTags, areaTitle, updateAreaTitle, areaText, updateAreaText, trackTitle }: EditNoteProps) {
+function EditNote({ checked, updateChecked, updateCheckedAdd, regex, currentTitle, currentText, currentHashTag, currentNoteId, updateHashTags, areaTitle, updateAreaTitle, areaText, updateAreaText, trackTitle }: EditNoteProps) {
 
     const dispatch = useDispatch();
 
@@ -84,6 +85,7 @@ function EditNote({ checked, updateChecked, regex, currentTitle, currentText, cu
 
     function cancelEdit() {
         updateChecked((prev: any) => !prev);
+        updateCheckedAdd((prev: boolean) => !prev);
         const editNote = document.getElementById("editNote") as HTMLFormElement;
         const formNote = document.getElementById('form') as HTMLFormElement;
         formNote.style.display === "none" ? formNote.style.display = "block" : formNote.style.display = "none";
@@ -102,16 +104,13 @@ function EditNote({ checked, updateChecked, regex, currentTitle, currentText, cu
                     <label>
                         Title:
                         <br />
-                        {/* <TextField id="titleedit" value={areaTitle} onChange={trackTitle} label="Title" variant="outlined" size='small' fullWidth style={{ marginTop: "1rem" }} /> */}
                         <textarea name="titleedit" id="titleedit" rows={1} style={{ resize: "none", display: 'flex', width: "350px" }} value={areaTitle} onChange={trackTitle}>
                         </textarea>
                     </label>
-                    {/* <TextField id="editText" label="Text area" variant="outlined" size='small' fullWidth value={areaText} onInput={trackDivInput} style={{ marginTop: "1rem" }}  /> */}
                     <label id='labelText'>
                         Text area:
                         <div id='pre' ></div>
                         <div contentEditable={true} id='divInput' unselectable='on' onScroll={scrollMinor} spellCheck="false" onInput={trackDivInput}></div>
-
                     </label>
                     <Button variant="contained" color="success" size='small' type='submit' style={{ marginTop: "1rem" }}>Submit</Button>
                     <Button variant="contained" color="warning" size='small' id='cancelButton' style={{ marginTop: "1rem" }} onClick={cancelEdit}>Cancel</Button>

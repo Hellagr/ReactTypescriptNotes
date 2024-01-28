@@ -90,6 +90,34 @@ ul {
   height: 150px;
 }
 
+#addDivInput {
+  border: black 1px solid;
+  border-radius: 5px;
+  height: 150px;
+  overflow: auto;
+  padding: 2px;
+  width: 350px;
+  resize: none;
+  white-space: break-spaces;
+  word-wrap: break-word;
+  margin-bottom: 5px;
+}
+
+#addPre {
+  position: absolute;
+  overflow: auto;
+  padding: 3px;
+  pointer-events: none;
+  height: 150px;
+  width: 350px;
+  white-space: break-spaces;
+  word-wrap: break-word;
+}
+
+#addPre > mark {
+  background: rgba(255, 255, 0, 0.5);
+}
+
 #divInput {
   color: transparent;
   background: transparent;

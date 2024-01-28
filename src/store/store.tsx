@@ -7,7 +7,6 @@ export const rootReducer = combineReducers({
 })
 
 export const store = legacy_createStore(rootReducer);
-console.log(store.subscribe(() => console.log(store.getState())));
 
 
 
