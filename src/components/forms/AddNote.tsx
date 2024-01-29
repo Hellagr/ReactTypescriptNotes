@@ -26,7 +26,12 @@ function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, u
 
     const dispatch = useDispatch();
     const [addFontSize, setAddFontSize] = useState(17);
-    const spanElement = document.createElement("span");
+    // const [boldText, setBoldText] = useState('');
+    // const [italicsText, setItalicsText] = useState('');
+    // const [fontColor, setFontColor] = useState('');
+
+
+
 
 
     //Add object to store
@@ -75,17 +80,90 @@ function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, u
     }
 
     function chgFontSize(e: any) {
+        const addDivInput = document.getElementById('addDivInput') as HTMLDivElement;
+        const spanElement = document.createElement("span");
         e.preventDefault();
         setAddFontSize(+e.target.value);
         const selectedText = window.getSelection();
         const selectedCurrentText = window.getSelection()?.toString() as string;
-        const selectRange = selectedText?.getRangeAt(0) as Range;
-        spanElement.innerHTML = selectedCurrentText;
-        selectRange.getClientRects();
-        selectRange.deleteContents()
-        spanElement.style.fontSize = e.target.value + "px";
-        selectRange.insertNode(spanElement);
+        if (selectedText === null) {
+            return;
+        } else {
+            addDivInput.focus();
+            const selectRange = selectedText?.getRangeAt(0) as Range;
+            spanElement.innerHTML = selectedCurrentText;
+            spanElement.style.fontSize = e.target.value + "px";
+            selectRange.deleteContents();
+            selectRange.insertNode(spanElement);
+        }
     }
+
+    function chgBold(e: any) {
+        const addDivInput = document.getElementById('addDivInput') as HTMLDivElement;
+        const spanElement = document.createElement("span");
+        e.preventDefault();
+        e.target.style.border === '' ? e.target.style.border = '2px solid' : e.target.style.border = '';
+        if (e.target.id === 'boldChng') {
+            e.target.style.fontWeight === '' ? e.target.style.fontWeight = 'bold' : e.target.style.fontWeight = '';
+            e.target.style.fontWeight === 'bold' ? spanElement.style.fontWeight = 'bold' : spanElement.style.fontWeight = '';
+        }
+        if (e.target.id === 'italicsFont') {
+            e.target.style.fontStyle === '' ? e.target.style.fontStyle = 'italic' : e.target.style.fontStyle = '';
+            e.target.style.fontStyle === 'italic' ? spanElement.style.fontStyle = 'italic' : spanElement.style.fontStyle = '';
+        }
+        const selectedText = window.getSelection();
+        const selectedCurrentText = window.getSelection()?.toString() as string;
+        if (selectedText === null) {
+            return;
+        } else {
+            addDivInput.focus();
+            const selectRange = selectedText?.getRangeAt(0) as Range;
+            spanElement.innerHTML = selectedCurrentText;
+            spanElement.style.color = e.target.value;
+            selectRange.deleteContents();
+            selectRange.insertNode(spanElement);
+        }
+    }
+
+    // function italicsFont(e: any) {
+    //     const addDivInput = document.getElementById('addDivInput') as HTMLDivElement;
+    //     const spanElement = document.createElement("span");
+    //     e.preventDefault();
+    //     e.target.style.border === '' ? e.target.style.border = '2px solid' : e.target.style.border = '';
+    //     e.target.style.fontStyle === '' ? e.target.style.fontStyle = 'italic' : e.target.style.fontStyle = '';
+    //     e.target.style.fontStyle === 'italic' ? spanElement.style.fontStyle = 'italic' : spanElement.style.fontStyle = '';
+    //     console.log('e.target.style.fontWeight::: ', e.target.style.fontWeight);
+    //     const selectedText = window.getSelection();
+    //     const selectedCurrentText = window.getSelection()?.toString() as string;
+    //     if (selectedText === null) {
+    //         return;
+    //     } else {
+    //         addDivInput.focus();
+    //         const selectRange = selectedText?.getRangeAt(0) as Range;
+    //         spanElement.innerHTML = selectedCurrentText;
+    //         selectRange.deleteContents();
+    //         selectRange.insertNode(spanElement);
+    //     }
+    // }
+
+    // function chgColorFont(e: any) {
+    //     const addDivInput = document.getElementById('addDivInput') as HTMLDivElement;
+    //     const spanElement = document.createElement("span");
+    //     e.preventDefault();
+    //     const selectedText = window.getSelection();
+    //     const selectedCurrentText = window.getSelection()?.toString() as string;
+    //     if (selectedText === null) {
+    //         return;
+    //     } else {
+    //         addDivInput.focus();
+    //         const selectRange = selectedText?.getRangeAt(0) as Range;
+    //         spanElement.innerHTML = selectedCurrentText;
+
+
+    //         selectRange.deleteContents();
+    //         selectRange.insertNode(spanElement);
+    //     }
+    // }
 
     return (
         <>
@@ -105,7 +183,13 @@ function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, u
                         <br />
                         <div>
                             <div>
-                                <input id='fontSize' type="number" value={addFontSize} style={{ width: "40px", marginBottom: "5px" }} title='Font size' onChange={chgFontSize} />
+                                <input id='fontSize' type="number" value={addFontSize} style={{ width: "40px", marginBottom: "5px", borderRadius: "5px" }} title='Font size' onChange={chgFontSize} />
+
+                                <input id='boldChng' type="button" value={"B"} style={{ width: "25px", marginBottom: "5px", marginLeft: "5px", borderRadius: "5px" }} title='Bold font' onClick={chgBold} />
+
+                                <input id='italicsFont' type="button" value={"I"} style={{ width: "25px", marginBottom: "5px", marginLeft: "5px", borderRadius: "5px" }} title='Italic font' onClick={chgBold} />
+
+                                <input type="color" title='Font color' id="fontColor" style={{ width: "25px", marginBottom: "5px", marginLeft: "5px", height: '22px', borderRadius: "5px" }} onChange={chgBold} />
                             </div>
                             {/* <div id='addPre'></div> */}
                             <div contentEditable={true} id='addDivInput' spellCheck="false" onInput={trackDivInput}></div>

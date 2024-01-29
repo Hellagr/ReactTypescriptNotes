@@ -67,7 +67,7 @@ function AppLogic() {
         <div className="App">
             <div className="App-header">
                 <Grid container spacing={2} >
-                    <Grid item lg={4} md={6} sm={12} xs={12} >
+                    <Grid item lg={4} md={6} sm={12} xs={12} style={{ display: 'grid', justifyContent: 'center' }}>
                         <AddNote hashTags={hashTags} currentTitle={currentTitle} updateHashTags={updateHashTags} updateAreaTitle={updateAreaTitle} updateAreaText={updateAreaText} currentHashTag={currentHashTag} areaTitle={areaTitle} trackTitle={trackTitle} areaText={areaText} currentText={currentText} regex={regex} checkedAdd={checkedAdd} />
                         <EditNote currentTitle={currentTitle} updateHashTags={updateHashTags} updateAreaTitle={updateAreaTitle} updateAreaText={updateAreaText} currentHashTag={currentHashTag} areaTitle={areaTitle} trackTitle={trackTitle} currentText={currentText} regex={regex} currentNoteId={currentNoteId} checked={checked} updateChecked={updateChecked} areaText={areaText} updateCheckedAdd={updateCheckedAdd} />
                         <div style={{ display: 'flex', marginTop: '1rem' }}>
