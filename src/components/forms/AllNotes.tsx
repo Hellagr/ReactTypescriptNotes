@@ -24,7 +24,6 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
 
     const dispatch = useDispatch();
     const arrNoteObj = useSelector((state: any) => state.note[0]);
-    const arrDeletedNoteObj = useSelector((state: any) => state.deletedNote[0]);
     const currentDiv = useRef<string>("");
     const [ifActive, setIfActive] = useState<boolean>(false);
     const [currHash, setCurrHash] = useState<string[]>([]);
@@ -82,11 +81,9 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
         const editNote = document.getElementById('editNote') as HTMLFormElement;
         const editTitle = document.getElementById("titleedit") as HTMLTextAreaElement;
         let divInput = document.getElementById('divInput') as HTMLDivElement;
-        let pre = document.getElementById('pre') as HTMLDivElement;
 
         formNote.style.display === "none" ? formNote.style.display = "block" : formNote.style.display = "none";
         editNote.style.display === "none" ? editNote.style.display = "block" : editNote.style.display = "none";
-        editNote.style.visibility === "hidden" ? editNote.style.visibility = "visible" : editNote.style.visibility = "hidden";
 
         const objFromStore = arrNoteObj.filter((el: any) => el.id === +idNote && el);
 
@@ -95,23 +92,27 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
         updateAreaTitle(objFromStore[0].title);
         const valInput = objFromStore[0].text.replaceAll(regex, "<mark>$&</mark>");
         divInput.innerHTML = valInput;
-        currentText.current = divInput.textContent!;
-        pre.innerHTML = valInput;
+        currentText.current = divInput.innerHTML;
         currentDiv.current = valInput;
         const findHashTag = divInput.textContent?.match(regex);
         updateHashTags(findHashTag);
         currentHashTag.current = objFromStore[0].hashTag;
+
+        //cursor to end
+        let range = document.createRange();
+        range.selectNodeContents(divInput);
+        range.collapse(false);
+        let selection = window.getSelection() as Selection;
+        selection.removeAllRanges();
+        selection.addRange(range);
         if (editNote.style.display === "none") {
             updateAreaTitle("");
             currentHashTag.current = [];
         }
-
     }
 
     //delete double tags
     const arrHashTags = arrNoteObj?.map((e: any) => e?.hashTag?.map((el: any) => el)).flat().reduce((acum: Array<string>, curr: string) => [...acum.filter((e: any) => e !== curr), curr], []);
-
-
 
     return (
         <div id='allNotes'>
@@ -129,16 +130,16 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
                             <Collapse key={el.id}>
                                 <div key={el.id} id='topNotes'>
                                     <div id="notes" key={el.id}>
-                                        <div id='data' style={{ display: 'block' }}>
+                                        <div id='data'>
                                             <div>Title: {el?.title}</div>
-                                            <div>Text: <br /> {parse(el?.text)}</div>
+                                            <div id='allNotesText'>Text: <br /> {parse(el?.text)}</div>
                                         </div>
                                         <div id='buttons'>
-                                            <Button variant="contained" color="info" size="small" startIcon={<EditIcon />} id={el.id} onClick={showHideEdit}>Edit</Button>
+                                            <Button className='editanddelete' variant="contained" color="info" size="small" startIcon={<EditIcon />} id={el.id} onClick={showHideEdit}>Edit</Button>
                                             <br />
                                             <br />
                                             <br />
-                                            <Button variant="contained" color="error" size="small" startIcon={<DeleteIcon />} id={el.id} onClick={deleteNote}>Delete</Button>
+                                            <Button className='editanddelete' variant="contained" color="error" size="small" startIcon={<DeleteIcon />} id={el.id} onClick={deleteNote}>Delete</Button>
                                         </div>
                                     </div>
                                     <div id='hashTag'>
@@ -156,16 +157,16 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
                             <Collapse key={element.id}>
                                 <div key={element?.id} id='topNotes'>
                                     <div id="notes" key={element?.id}>
-                                        <div id='data' style={{ display: 'block' }}>
+                                        <div id='data'>
                                             <div>Title: {element?.title}</div>
-                                            <div>Text: <br /> {parse(element?.text)}</div>
+                                            <div id='allNotesText'>Text: <br /> {parse(element?.text)}</div>
                                         </div>
                                         <div id='buttons'>
-                                            <Button variant="contained" color="info" size="small" id={element?.id} onClick={showHideEdit}>Edit</Button>
+                                            <Button className='editanddelete' variant="contained" color="info" size="small" id={element?.id} onClick={showHideEdit}>Edit</Button>
                                             <br />
                                             <br />
                                             <br />
-                                            <Button variant="contained" color="error" size="small" id={element?.id} onClick={deleteNote}>Delete</Button>
+                                            <Button className='editanddelete' variant="contained" color="error" size="small" id={element?.id} onClick={deleteNote}>Delete</Button>
                                         </div>
                                     </div>
                                     <div id='hashTag'>

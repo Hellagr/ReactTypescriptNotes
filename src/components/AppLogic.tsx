@@ -2,12 +2,8 @@ import React, { useRef, useState } from 'react'
 import AddNote from './forms/AddNote';
 import EditNote from './forms/EditNote';
 import AllNotes from './forms/AllNotes';
-import { Grid } from '@mui/material';
 import DeletedNotes from './forms/DeletedNotes';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateTimeField } from '@mui/x-date-pickers-pro';
-import dayjs, { Dayjs } from 'dayjs';
+import Clock from 'react-live-clock';
 
 function AppLogic() {
 
@@ -40,9 +36,6 @@ function AppLogic() {
         setCheckedAdd(update);
     }
 
-    const [value, setValue] = React.useState<Dayjs | null>(dayjs());
-
-
     //Check existence of database
     if (!('indexedDB' in window)) {
         alert("This browser doesn't support IndexedDB");
@@ -65,30 +58,31 @@ function AppLogic() {
 
     return (
         <div className="App">
-            <div className="App-header">
-                <Grid container spacing={2} >
-                    <Grid item lg={4} md={6} sm={12} xs={12} style={{ display: 'grid', justifyContent: 'center' }}>
-                        <AddNote hashTags={hashTags} currentTitle={currentTitle} updateHashTags={updateHashTags} updateAreaTitle={updateAreaTitle} updateAreaText={updateAreaText} currentHashTag={currentHashTag} areaTitle={areaTitle} trackTitle={trackTitle} areaText={areaText} currentText={currentText} regex={regex} checkedAdd={checkedAdd} />
-                        <EditNote currentTitle={currentTitle} updateHashTags={updateHashTags} updateAreaTitle={updateAreaTitle} updateAreaText={updateAreaText} currentHashTag={currentHashTag} areaTitle={areaTitle} trackTitle={trackTitle} currentText={currentText} regex={regex} currentNoteId={currentNoteId} checked={checked} updateChecked={updateChecked} areaText={areaText} updateCheckedAdd={updateCheckedAdd} />
-                        <div style={{ display: 'flex', marginTop: '1rem' }}>
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DateTimeField
-                                    label="Date and time"
-                                    value={value}
-                                    onChange={(newValue) => setValue(newValue)}
-                                    format="LLLL hh:mm"
-                                    style={{ display: 'flex', justifyContent: 'center', width: '357px' }}
-                                />
-                            </LocalizationProvider>
+            <div className="App-header" style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+
+                <div>
+                    <div id='clock'>
+                        <Clock
+                            ticking={true}
+                            format={'dddd, MMMM Mo, YYYY, h:mm:ss A'} />
+                    </div>
+                    <AddNote hashTags={hashTags} currentTitle={currentTitle} updateHashTags={updateHashTags} updateAreaTitle={updateAreaTitle} updateAreaText={updateAreaText} currentHashTag={currentHashTag} areaTitle={areaTitle} trackTitle={trackTitle} areaText={areaText} currentText={currentText} regex={regex} checkedAdd={checkedAdd} />
+                    <EditNote currentTitle={currentTitle} updateHashTags={updateHashTags} updateAreaTitle={updateAreaTitle} updateAreaText={updateAreaText} currentHashTag={currentHashTag} areaTitle={areaTitle} trackTitle={trackTitle} currentText={currentText} regex={regex} currentNoteId={currentNoteId} checked={checked} updateChecked={updateChecked} areaText={areaText} updateCheckedAdd={updateCheckedAdd} />
+                    <div id='formobile'>
+                        <div id='allForMobile'>
+                            <AllNotes currentTitle={currentTitle} updateHashTags={updateHashTags} updateAreaTitle={updateAreaTitle} currentHashTag={currentHashTag} currentText={currentText} regex={regex} currentNoteId={currentNoteId} updateChecked={updateChecked} updateCheckedAdd={updateCheckedAdd} />
                         </div>
-                    </Grid>
-                    <Grid item lg={4} md={6} sm={12} xs={12} style={{ display: 'grid', justifyContent: 'center' }}>
-                        <AllNotes currentTitle={currentTitle} updateHashTags={updateHashTags} updateAreaTitle={updateAreaTitle} currentHashTag={currentHashTag} currentText={currentText} regex={regex} currentNoteId={currentNoteId} updateChecked={updateChecked} updateCheckedAdd={updateCheckedAdd} />
-                    </Grid>
-                    <Grid item lg={4} md={12} sm={12} xs={12} style={{ display: 'grid', justifyContent: 'center' }}>
-                        <DeletedNotes />
-                    </Grid>
-                </Grid>
+                        <div id='allDeletedNotesForTablet'>
+                            <DeletedNotes />
+                        </div>
+                    </div>
+                </div>
+                <div id='allNotesForPC'>
+                    <AllNotes currentTitle={currentTitle} updateHashTags={updateHashTags} updateAreaTitle={updateAreaTitle} currentHashTag={currentHashTag} currentText={currentText} regex={regex} currentNoteId={currentNoteId} updateChecked={updateChecked} updateCheckedAdd={updateCheckedAdd} />
+                </div>
+                <div id='allDeletedNotes'>
+                    <DeletedNotes />
+                </div>
             </div>
         </div>
     )

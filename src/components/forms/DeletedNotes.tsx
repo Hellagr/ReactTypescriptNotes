@@ -31,8 +31,8 @@ function DeletedNotes() {
 
     return (
 
-        <div>
-            <div style={{ marginBottom: "2.25rem" }}>
+        <div >
+            <div id='deletedNotesLabel' style={{ marginBottom: "2.25rem" }}>
                 Deleted notes:
             </div>
             <TransitionGroup>
@@ -45,7 +45,7 @@ function DeletedNotes() {
                                         <div>Title: {element?.title}</div>
                                         <div>Text: <br /> {parse(element?.text)}</div>
                                     </div>
-                                    <div style={{ fontSize: "10px", height: "15px" }}>
+                                    <div id='deletedInfo'>
                                         {'Deletion date: ' + element.deletetime}
                                     </div>
                                 </div>
@@ -53,7 +53,7 @@ function DeletedNotes() {
                                     <br />
                                     <br />
                                     <br />
-                                    <Button id={element.id} onClick={deleteNote} variant="outlined" color='error' style={{ maxWidth: '30px', maxHeight: '30px', minWidth: '30px', minHeight: '30px' }} >x</Button>
+                                    <Button className='deleteButtons' id={element.id} onClick={deleteNote} variant="outlined" color='error' >x</Button>
                                 </div>
                             </div>
                             <div id='hashTag'>

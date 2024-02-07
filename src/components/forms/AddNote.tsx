@@ -26,13 +26,6 @@ function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, u
 
     const dispatch = useDispatch();
     const [addFontSize, setAddFontSize] = useState(17);
-    // const [boldText, setBoldText] = useState('');
-    // const [italicsText, setItalicsText] = useState('');
-    // const [fontColor, setFontColor] = useState('');
-
-
-
-
 
     //Add object to store
     function submitFunc(e: any) {
@@ -98,7 +91,7 @@ function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, u
         }
     }
 
-    function chgBold(e: any) {
+    function chgStyle(e: any) {
         const addDivInput = document.getElementById('addDivInput') as HTMLDivElement;
         const spanElement = document.createElement("span");
         e.preventDefault();
@@ -125,46 +118,6 @@ function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, u
         }
     }
 
-    // function italicsFont(e: any) {
-    //     const addDivInput = document.getElementById('addDivInput') as HTMLDivElement;
-    //     const spanElement = document.createElement("span");
-    //     e.preventDefault();
-    //     e.target.style.border === '' ? e.target.style.border = '2px solid' : e.target.style.border = '';
-    //     e.target.style.fontStyle === '' ? e.target.style.fontStyle = 'italic' : e.target.style.fontStyle = '';
-    //     e.target.style.fontStyle === 'italic' ? spanElement.style.fontStyle = 'italic' : spanElement.style.fontStyle = '';
-    //     console.log('e.target.style.fontWeight::: ', e.target.style.fontWeight);
-    //     const selectedText = window.getSelection();
-    //     const selectedCurrentText = window.getSelection()?.toString() as string;
-    //     if (selectedText === null) {
-    //         return;
-    //     } else {
-    //         addDivInput.focus();
-    //         const selectRange = selectedText?.getRangeAt(0) as Range;
-    //         spanElement.innerHTML = selectedCurrentText;
-    //         selectRange.deleteContents();
-    //         selectRange.insertNode(spanElement);
-    //     }
-    // }
-
-    // function chgColorFont(e: any) {
-    //     const addDivInput = document.getElementById('addDivInput') as HTMLDivElement;
-    //     const spanElement = document.createElement("span");
-    //     e.preventDefault();
-    //     const selectedText = window.getSelection();
-    //     const selectedCurrentText = window.getSelection()?.toString() as string;
-    //     if (selectedText === null) {
-    //         return;
-    //     } else {
-    //         addDivInput.focus();
-    //         const selectRange = selectedText?.getRangeAt(0) as Range;
-    //         spanElement.innerHTML = selectedCurrentText;
-
-
-    //         selectRange.deleteContents();
-    //         selectRange.insertNode(spanElement);
-    //     }
-    // }
-
     return (
         <>
             <Box>
@@ -173,10 +126,10 @@ function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, u
                         <div >
                             Add note:
                         </div>
-                        <div style={{ marginTop: "1rem" }}></div>
+                        <div id='afterAdd' style={{ marginTop: "1rem" }}></div>
                         <label >
                             Title:
-                            <textarea name="titleinput" id="titleinput" rows={1} style={{ resize: "none", display: "flex", width: "350px" }} value={areaTitle} onChange={trackTitle}></textarea>
+                            <textarea name="titleinput" id="titleinput" rows={1} value={areaTitle} onChange={trackTitle}></textarea>
                         </label>
 
                         Text area:
@@ -185,16 +138,15 @@ function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, u
                             <div>
                                 <input id='fontSize' type="number" value={addFontSize} style={{ width: "40px", marginBottom: "5px", borderRadius: "5px" }} title='Font size' onChange={chgFontSize} />
 
-                                <input id='boldChng' type="button" value={"B"} style={{ width: "25px", marginBottom: "5px", marginLeft: "5px", borderRadius: "5px" }} title='Bold font' onClick={chgBold} />
+                                <input id='boldChng' type="button" value={"B"} style={{ width: "25px", marginBottom: "5px", marginLeft: "5px", borderRadius: "5px" }} title='Bold font' onClick={chgStyle} />
 
-                                <input id='italicsFont' type="button" value={"I"} style={{ width: "25px", marginBottom: "5px", marginLeft: "5px", borderRadius: "5px" }} title='Italic font' onClick={chgBold} />
+                                <input id='italicsFont' type="button" value={"I"} style={{ width: "25px", marginBottom: "5px", marginLeft: "5px", borderRadius: "5px" }} title='Italic font' onClick={chgStyle} />
 
-                                <input type="color" title='Font color' id="fontColor" style={{ width: "25px", marginBottom: "5px", marginLeft: "5px", height: '22px', borderRadius: "5px" }} onChange={chgBold} />
+                                <input type="color" title='Font color' id="fontColor" style={{ width: "25px", marginBottom: "5px", marginLeft: "5px", height: '22px', borderRadius: "5px" }} onChange={chgStyle} />
                             </div>
-                            {/* <div id='addPre'></div> */}
                             <div contentEditable={true} id='addDivInput' spellCheck="false" onInput={trackDivInput}></div>
                         </div>
-                        <Button variant="contained" color="success" size='small' type='submit'>Add note</Button>
+                        <Button className='buttonsMaterial' variant="contained" color="success" size='small' type='submit'>Add note</Button>
                         <br />
                         <div style={{ width: "350px", wordBreak: "break-word", marginLeft: "3px", borderRadius: "3px", padding: "1px" }}>
                             {currentHashTag.current ? currentHashTag.current.join(" ") : null}
