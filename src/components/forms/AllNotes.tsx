@@ -116,17 +116,19 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
 
     return (
         <div id='allNotes'>
-            Created notes:
-            <br />
-            <label id='taglist'>All tags:
-                {arrHashTags?.map((e: any, index: string) => <span key={index} id={index} onClick={findNote} style={{ marginLeft: "3px", borderRadius: "4px", padding: "2px" }}>{e}</span>)}
-            </label>
+            <div id='createdNotesLabel'>
+                Created notes:
+                <br />
+                <label id='taglist'>All tags:
+                    {arrHashTags?.map((e: any, index: string) => <span key={index} id={index} onClick={findNote} style={{ borderRadius: "4px", padding: "1px" }}>{e}</span>)}
+                </label>
+            </div>
             <ul>
                 <TransitionGroup>
                     {ifActive === true ?
                         //If a user start searching a note through a hashTag
                         arrNoteObj.map((el: any) =>
-                            el.hashTag.some((e: string) => currHash.some((el: string) => el === e)) &&
+                            el.hashTag?.some((e: string) => currHash.some((el: string) => el === e)) &&
                             <Collapse key={el.id}>
                                 <div key={el.id} id='topNotes'>
                                     <div id="notes" key={el.id}>

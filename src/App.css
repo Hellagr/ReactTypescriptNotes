@@ -308,7 +308,7 @@ ul {
   }
   #deletedNotesLabel {
     font-size: 11px;
-    margin-bottom: 0.3rem !important;
+    margin-bottom: 0 !important;
   }
 }
 
@@ -394,12 +394,17 @@ ul {
     padding: 0 !important;
   }
 
-  #deletedNotesLabel {
-    margin-bottom: 1.7rem !important;
+  #deletedNotesLabel,
+  #createdNotesLabel {
+    height: 30px;
   }
 
   #data > div:first-child {
     border-bottom: rgb(172, 170, 170) 1px solid;
     width: 90px;
+  }
+
+  ul {
+    margin: 0;
   }
 }

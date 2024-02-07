@@ -183,7 +183,7 @@ function EditNote(this: any, { checked, updateChecked, updateCheckedAdd, regex, 
 
                             <input id='italicsFont' type="button" value={"I"} style={{ width: "25px", marginBottom: "5px", marginLeft: "5px", borderRadius: "5px" }} title='Italic font' onClick={chgStyle} />
 
-                            <input type="color" title='Font color' id="fontColor" style={{ width: "25px", marginBottom: "5px", marginLeft: "5px", height: '22px', borderRadius: "5px" }} onChange={chgStyle} />
+                            <input type="color" title='Font color' id="fontColor" style={{ width: "20px", marginBottom: "5px", marginLeft: "5px", height: "20px", borderRadius: "5px" }} onChange={chgStyle} />
                         </div>
                     </div>
                     <div contentEditable={true} id='divInput' onInput={trackDivInput} spellCheck="false" onClick={divClick}>
