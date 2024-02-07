@@ -137,11 +137,11 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
                                             <div id='allNotesText'>Text: <br /> {parse(el?.text)}</div>
                                         </div>
                                         <div id='buttons'>
-                                            <Button className='editanddelete' variant="contained" color="info" size="small" startIcon={<EditIcon />} id={el.id} onClick={showHideEdit}>Edit</Button>
+                                            <Button className='editanddelete' variant="contained" color="info" size="small" id={el.id} onClick={showHideEdit}>Edit</Button>
                                             <br />
                                             <br />
                                             <br />
-                                            <Button className='editanddelete' variant="contained" color="error" size="small" startIcon={<DeleteIcon />} id={el.id} onClick={deleteNote}>Delete</Button>
+                                            <Button className='editanddelete' variant="contained" color="error" size="small" id={el.id} onClick={deleteNote}>Delete</Button>
                                         </div>
                                     </div>
                                     <div id='hashTag'>
