@@ -30,11 +30,11 @@ function EditNote(this: any, { checked, updateChecked, updateCheckedAdd, regex, 
     // Update note
     const updateNote = (e: any) => {
         updateChecked((prev: any) => !prev);
+        updateCheckedAdd((prev: any) => !prev);
         e.preventDefault();
         const idNote = currentNoteId.current;
         const titleValue = currentTitle.current;
         const textValue = currentText.current;
-        console.log('textValue::: ', textValue);
         const hashTagValue = currentHashTag.current;
         dispatch(updateNoteAction(idNote, titleValue, textValue, hashTagValue));
         const request = window.indexedDB.open("Database", 2);
@@ -60,8 +60,8 @@ function EditNote(this: any, { checked, updateChecked, updateCheckedAdd, regex, 
         currentHashTag.current = undefined;
         const editNote = document.getElementById("editNote") as HTMLFormElement;
         const formNote = document.getElementById('form') as HTMLFormElement;
-        formNote.style.display === "none" ? formNote.style.display = "block" : formNote.style.display = "none";
         editNote.style.display === "none" ? editNote.style.display = "block" : editNote.style.display = "none";
+        formNote.style.display === "none" ? formNote.style.display = "block" : formNote.style.display = "none";
     };
 
 
@@ -88,15 +88,9 @@ function EditNote(this: any, { checked, updateChecked, updateCheckedAdd, regex, 
                 selection.modify('extend', "backward", "line");
             }
             const modifyDiv = currentText.current;
-            console.log('modifyDiv ::: ', modifyDiv);
             selection.deleteFromDocument();
             divInput.insertAdjacentHTML('afterbegin', modifyDiv);
         }
-    }
-
-    function divClick(e: any) {
-        console.log('e::: ', e);
-
     }
 
     function cancelEdit() {
@@ -132,30 +126,46 @@ function EditNote(this: any, { checked, updateChecked, updateCheckedAdd, regex, 
 
     function chgStyle(e: any) {
         const divInput = document.getElementById('divInput') as HTMLDivElement;
-        const spanElement = document.createElement("span");
+        const span = document.createElement('span');
         e.preventDefault();
-        e.target.style.border === '' ? e.target.style.border = '2px solid' : e.target.style.border = '';
-        if (e.target.id === 'boldChng') {
-            e.target.style.fontWeight === '' ? e.target.style.fontWeight = 'bold' : e.target.style.fontWeight = '';
-            e.target.style.fontWeight === 'bold' ? spanElement.style.fontWeight = 'bold' : spanElement.style.fontWeight = '';
-        }
-        if (e.target.id === 'italicsFont') {
-            e.target.style.fontStyle === '' ? e.target.style.fontStyle = 'italic' : e.target.style.fontStyle = '';
-            e.target.style.fontStyle === 'italic' ? spanElement.style.fontStyle = 'italic' : spanElement.style.fontStyle = '';
-        }
+
         const selectedText = window.getSelection();
         const selectedCurrentText = window.getSelection()?.toString() as string;
-        if (selectedText === null) {
-            return;
-        } else {
-            divInput.focus();
-            const selectRange = selectedText?.getRangeAt(0) as Range;
-            spanElement.innerHTML = selectedCurrentText;
-            spanElement.style.color = e.target.value;
-            selectRange.deleteContents();
-            selectRange.insertNode(spanElement);
+        if (e.target.id === 'boldChng') {
+            if (selectedText === null) {
+                return;
+            } else {
+                divInput.focus();
+                if (selectedCurrentText.length > 0) {
+                    document.execCommand('bold');
+                }
+            }
         }
-        currentText.current = divInput.innerHTML;
+        if (e.target.id === 'italicsFont') {
+            if (selectedText === null) {
+                return;
+            } else {
+                divInput.focus();
+                if (selectedCurrentText.length > 0) {
+                    document.execCommand('italic');
+                }
+            }
+        }
+        if (e.target.id === 'fontColor') {
+            if (selectedText === null) {
+                return;
+            } else {
+                divInput.focus();
+                if (selectedCurrentText.length > 0) {
+                    divInput.focus();
+                    const selectRange = selectedText?.getRangeAt(0) as Range;
+                    span.innerHTML = selectedCurrentText;
+                    span.style.color = e.target.value;
+                    selectRange.deleteContents();
+                    selectRange.insertNode(span);
+                }
+            }
+        }
     }
 
 
@@ -186,7 +196,7 @@ function EditNote(this: any, { checked, updateChecked, updateCheckedAdd, regex, 
                             <input type="color" title='Font color' id="fontColor" style={{ width: "20px", marginBottom: "5px", marginLeft: "5px", height: "20px", borderRadius: "5px" }} onChange={chgStyle} />
                         </div>
                     </div>
-                    <div contentEditable={true} id='divInput' onInput={trackDivInput} spellCheck="false" onClick={divClick}>
+                    <div contentEditable={true} id='divInput' onInput={trackDivInput} spellCheck="false" >
                     </div>
                     <Button className='buttonsMaterial' variant="contained" color="success" size='small' type='submit' >Submit</Button>
                     <Button className='buttonsMaterial' variant="contained" color="warning" size='small' id='cancelButton' onClick={cancelEdit}>Cancel</Button>

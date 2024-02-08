@@ -38,6 +38,14 @@ mark {
   border-radius: 5px;
   padding: 10px;
   height: 150px;
+  transition: 0.05s;
+}
+
+#notes:hover {
+  transform: scale(1.03);
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
 }
 
 #data {
@@ -85,6 +93,23 @@ ul {
   height: 150px;
 }
 
+#line {
+  width: 1px;
+  height: 500px;
+  background-color: gray;
+}
+#line2 {
+  width: 1px;
+  height: 500px;
+  background-color: gray;
+}
+#line3 {
+  display: none;
+  width: 1px;
+  height: 270px;
+  background-color: gray;
+}
+
 #titleinput {
   border-radius: 5px;
   border: black 1px solid;
@@ -92,6 +117,7 @@ ul {
   display: flex;
   width: 350px;
   height: 15px;
+  transition: 0.1s;
 }
 #addDivInput {
   border: black 1px solid;
@@ -104,6 +130,12 @@ ul {
   white-space: break-spaces;
   word-wrap: break-word;
   margin-bottom: 5px;
+  transition: 0.1s;
+}
+
+#titleinput:hover,
+#addDivInput:hover {
+  box-shadow: 0px 0px 5px 0px rgb(0, 21, 255);
 }
 
 #titleedit {
@@ -112,7 +144,7 @@ ul {
   border-radius: 5px;
   border: black 1px solid;
   animation-name: highlight-border;
-  animation-duration: 1s;
+  animation-duration: 4s;
   animation-iteration-count: infinite;
 }
 #divInput {
@@ -128,13 +160,20 @@ ul {
   word-wrap: break-word;
   margin-bottom: 5px;
   animation-name: highlight-border;
-  animation-duration: 1s;
+  animation-duration: 4s;
   animation-iteration-count: infinite;
 }
 
 #divInput > mark {
   padding: 0.5px;
   border-radius: 6px;
+}
+
+#noNotes {
+  color: gray;
+  display: flex;
+  justify-content: center;
+  margin-top: 150px;
 }
 
 .delPermanently {
@@ -158,7 +197,12 @@ ul {
     -moz-box-shadow: 0px 0px 0px -100px rgba(34, 60, 80, 0);
     box-shadow: 0px 0px 0px -100px rgba(34, 60, 80, 0);
   }
-  50% {
+  25% {
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
+  }
+  75% {
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
     -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
@@ -171,8 +215,10 @@ ul {
 }
 
 #clock {
+  display: flex;
   margin-top: 1.1rem;
   margin-bottom: 1.1rem;
+  justify-content: space-between;
 }
 
 #allDeletedNotesForTablet {
@@ -193,6 +239,10 @@ ul {
   min-width: 30px !important;
   max-height: 30px !important;
   min-height: 30px !important;
+}
+
+.hiddenAdd {
+  display: none !important;
 }
 
 #data {
@@ -224,16 +274,14 @@ ul {
     font-size: 11px;
     width: 255px;
   }
-  #form {
-    margin-right: 6px;
-  }
 
   .buttonsMaterial {
     max-width: 10px;
     min-width: 10px;
     max-height: 25px;
     min-height: 25px;
-    font-size: 8px !important;
+    font-size: 9px !important;
+    padding: 0 !important;
   }
 
   .editanddelete {
@@ -242,6 +290,8 @@ ul {
     max-height: 25px;
     min-height: 25px;
     font-size: 8px !important;
+    font-size: 11px !important;
+    padding: 0 !important;
   }
 
   #titleinput,
@@ -267,6 +317,7 @@ ul {
 
   #allNotesForPC {
     display: block;
+    width: 250px;
   }
 
   #deletedData {
@@ -310,6 +361,9 @@ ul {
     font-size: 11px;
     margin-bottom: 0 !important;
   }
+  #line2 {
+    display: none;
+  }
 }
 
 @media (max-width: 520px) {
@@ -333,13 +387,21 @@ ul {
   }
   #allForMobile {
     display: block;
-    margin-right: 8px;
+  }
+
+  #form {
+    display: block;
   }
 
   #form,
   #editNote {
     margin: auto;
     margin-bottom: 10px;
+  }
+
+  #addDivInput,
+  #divInput {
+    height: 30px;
   }
 
   #allNotes,
@@ -373,6 +435,7 @@ ul {
     font-size: 10px !important;
     letter-spacing: 0em !important;
     padding: 0 !important;
+    display: none !important;
   }
 
   .editanddelete {
@@ -394,6 +457,15 @@ ul {
     padding: 0 !important;
   }
 
+  .hiddenAdd {
+    display: block !important;
+    max-width: 25px !important;
+    min-width: 25px !important;
+    max-height: 25px !important;
+    min-height: 25px !important;
+    font-size: 17px !important;
+    padding: 0 !important;
+  }
   #deletedNotesLabel,
   #createdNotesLabel {
     height: 30px;
@@ -406,5 +478,23 @@ ul {
 
   ul {
     margin: 0;
+  }
+
+  #noNotes {
+    justify-content: start;
+    margin-top: 60px;
+    font-size: 11px;
+  }
+
+  #line {
+    display: none;
+  }
+  #line2 {
+    display: none;
+  }
+  #line3 {
+    display: block;
+    margin-right: 4px;
+    margin-left: 4px;
   }
 }

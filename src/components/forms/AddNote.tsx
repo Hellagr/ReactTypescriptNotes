@@ -30,7 +30,6 @@ function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, u
     //Add object to store
     function submitFunc(e: any) {
         const addDivInput = document.getElementById('addDivInput') as HTMLDivElement;
-        console.log('addPre::: ', addDivInput);
         e.preventDefault();
         const titleValue = e.target[0].value;
         const textValue = addDivInput.innerHTML;
@@ -60,6 +59,7 @@ function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, u
             return alert("you should enter title and text");
         };
         e.target.reset();
+        addDivInput.textContent = '';
     };
 
     function trackDivInput(e: any) {
@@ -91,30 +91,42 @@ function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, u
         }
     }
 
+    //1000000 years of evolution and i used method that not recomended
     function chgStyle(e: any) {
         const addDivInput = document.getElementById('addDivInput') as HTMLDivElement;
-        const spanElement = document.createElement("span");
         e.preventDefault();
-        e.target.style.border === '' ? e.target.style.border = '2px solid' : e.target.style.border = '';
-        if (e.target.id === 'boldChng') {
-            e.target.style.fontWeight === '' ? e.target.style.fontWeight = 'bold' : e.target.style.fontWeight = '';
-            e.target.style.fontWeight === 'bold' ? spanElement.style.fontWeight = 'bold' : spanElement.style.fontWeight = '';
-        }
-        if (e.target.id === 'italicsFont') {
-            e.target.style.fontStyle === '' ? e.target.style.fontStyle = 'italic' : e.target.style.fontStyle = '';
-            e.target.style.fontStyle === 'italic' ? spanElement.style.fontStyle = 'italic' : spanElement.style.fontStyle = '';
-        }
+
         const selectedText = window.getSelection();
         const selectedCurrentText = window.getSelection()?.toString() as string;
-        if (selectedText === null) {
-            return;
-        } else {
-            addDivInput.focus();
-            const selectRange = selectedText?.getRangeAt(0) as Range;
-            spanElement.innerHTML = selectedCurrentText;
-            spanElement.style.color = e.target.value;
-            selectRange.deleteContents();
-            selectRange.insertNode(spanElement);
+        if (e.target.id === 'boldChng') {
+            if (selectedText === null) {
+                return;
+            } else {
+                addDivInput.focus();
+                if (selectedCurrentText.length > 0) {
+                    document.execCommand('bold');
+                }
+            }
+        }
+        if (e.target.id === 'italicsFont') {
+            if (selectedText === null) {
+                return;
+            } else {
+                addDivInput.focus();
+                if (selectedCurrentText.length > 0) {
+                    document.execCommand('italic');
+                }
+            }
+        }
+        if (e.target.id === 'fontColor') {
+            if (selectedText === null) {
+                return;
+            } else {
+                addDivInput.focus();
+                if (selectedCurrentText.length > 0) {
+                    document.execCommand('foreColor', false, e.target.value);
+                }
+            }
         }
     }
 
@@ -122,7 +134,7 @@ function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, u
         <>
             <Box>
                 <Fade in={checkedAdd}>
-                    <form id="form" onSubmit={submitFunc} >
+                    <form id="form" onSubmit={submitFunc}>
                         <div >
                             Add note:
                         </div>
@@ -143,10 +155,12 @@ function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, u
                                 <input id='italicsFont' type="button" value={"I"} style={{ width: "25px", marginBottom: "5px", marginLeft: "5px", borderRadius: "5px" }} title='Italic font' onClick={chgStyle} />
 
                                 <input type="color" title='Font color' id="fontColor" style={{ width: "25px", marginBottom: "5px", marginLeft: "5px", height: '22px', borderRadius: "5px" }} onChange={chgStyle} />
+
                             </div>
                             <div contentEditable={true} id='addDivInput' spellCheck="false" onInput={trackDivInput}></div>
                         </div>
                         <Button className='buttonsMaterial' variant="contained" color="success" size='small' type='submit'>Add note</Button>
+                        <Button className='hiddenAdd' variant="contained" color="success" size='small' type='submit'>+</Button>
                         <br />
                         <div style={{ width: "350px", wordBreak: "break-word", marginLeft: "3px", borderRadius: "3px", padding: "1px" }}>
                             {currentHashTag.current ? currentHashTag.current.join(" ") : null}

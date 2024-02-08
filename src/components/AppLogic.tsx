@@ -59,12 +59,16 @@ function AppLogic() {
     return (
         <div className="App">
             <div className="App-header" style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-
                 <div>
-                    <div id='clock'>
-                        <Clock
-                            ticking={true}
-                            format={'dddd, MMMM Mo, YYYY, h:mm:ss A'} />
+                    <div>
+                        <div id='clock'>
+                            <Clock
+                                ticking={true}
+                                format={'MMMM Mo | dddd '} />
+                            <Clock
+                                ticking={true}
+                                format={'h:mm:ss A'} />
+                        </div>
                     </div>
                     <AddNote hashTags={hashTags} currentTitle={currentTitle} updateHashTags={updateHashTags} updateAreaTitle={updateAreaTitle} updateAreaText={updateAreaText} currentHashTag={currentHashTag} areaTitle={areaTitle} trackTitle={trackTitle} areaText={areaText} currentText={currentText} regex={regex} checkedAdd={checkedAdd} />
                     <EditNote currentTitle={currentTitle} updateHashTags={updateHashTags} updateAreaTitle={updateAreaTitle} updateAreaText={updateAreaText} currentHashTag={currentHashTag} areaTitle={areaTitle} trackTitle={trackTitle} currentText={currentText} regex={regex} currentNoteId={currentNoteId} checked={checked} updateChecked={updateChecked} areaText={areaText} updateCheckedAdd={updateCheckedAdd} />
@@ -72,14 +76,17 @@ function AppLogic() {
                         <div id='allForMobile'>
                             <AllNotes currentTitle={currentTitle} updateHashTags={updateHashTags} updateAreaTitle={updateAreaTitle} currentHashTag={currentHashTag} currentText={currentText} regex={regex} currentNoteId={currentNoteId} updateChecked={updateChecked} updateCheckedAdd={updateCheckedAdd} />
                         </div>
+                        <div id='line3'></div>
                         <div id='allDeletedNotesForTablet'>
                             <DeletedNotes />
                         </div>
                     </div>
                 </div>
+                <div id='line'></div>
                 <div id='allNotesForPC'>
                     <AllNotes currentTitle={currentTitle} updateHashTags={updateHashTags} updateAreaTitle={updateAreaTitle} currentHashTag={currentHashTag} currentText={currentText} regex={regex} currentNoteId={currentNoteId} updateChecked={updateChecked} updateCheckedAdd={updateCheckedAdd} />
                 </div>
+                <div id='line2'></div>
                 <div id='allDeletedNotes'>
                     <DeletedNotes />
                 </div>

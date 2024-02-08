@@ -1,8 +1,6 @@
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Collapse } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import { TransitionGroup } from 'react-transition-group';
 import { addDeletedNote } from '../../actions/action';
 import parse from 'html-react-parser';
@@ -43,7 +41,7 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
             const getRequestNotes = objectStoreNotes.get(+idNote);
             getRequestNotes.onsuccess = () => {
                 const data = getRequestNotes.result;
-                data.deletetime = new Date().toString();
+                data.deletetime = new Date().toISOString().slice(0, 16).split('T').join(" ");
                 dispatch(addDeletedNote(data.id, data.title, data.text, data.deletetime, data.hashTag));
                 const requestDeletedNotes = window.indexedDB.open("Database", 2);
                 requestDeletedNotes.onsuccess = () => {
@@ -116,6 +114,7 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
 
     return (
         <div id='allNotes'>
+
             <div id='createdNotesLabel'>
                 Created notes:
                 <br />
@@ -178,6 +177,9 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
                             </Collapse>
                         )
                     }
+                    <div id='noNotes'>
+                        {arrNoteObj?.length === 0 ? "There's no notes" : null}
+                    </div>
                 </TransitionGroup>
             </ul >
         </div >

@@ -63,6 +63,9 @@ function DeletedNotes() {
                     </Collapse>
                 )
                 }
+                <div id='noNotes'>
+                    {arrDeletedNoteObj?.length === 0 ? "There's no notes" : null}
+                </div>
             </TransitionGroup>
         </div >
     )
