@@ -446,11 +446,8 @@ textarea:focus,
   }
 
   #deletedNotesLabel {
-    padding-bottom: 15px;
-  }
-
-  #deletedNotesLabel {
     font-size: 11px;
+    padding-bottom: 15px;
   }
 
   #allNotesForPC {
@@ -497,10 +494,7 @@ textarea:focus,
     display: block;
     margin-top: 10px;
   }
-  #deletedNotesLabel {
-    font-size: 11px;
-    margin-bottom: 0 !important;
-  }
+
   #line2 {
     display: none;
   }

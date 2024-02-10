@@ -35,38 +35,40 @@ function DeletedNotes() {
             <div id='deletedNotesLabel'>
                 Deleted notes:
             </div>
-            <TransitionGroup>
-                {arrDeletedNoteObj?.map((element: any) =>
-                    <Collapse key={element.id}>
-                        <div key={element.id} id='topNotes' style={{ borderRadius: "5px" }}>
-                            <div id="notes" key={element.id} style={{ backgroundColor: "#a39193", }}>
-                                <div>
-                                    <div id='deletedData' style={{ display: 'block' }}>
-                                        <div>Title: {element?.title}</div>
-                                        <div>Text: <br /> {parse(element?.text)}</div>
+            <div>
+                <TransitionGroup>
+                    {arrDeletedNoteObj?.map((element: any) =>
+                        <Collapse key={element.id}>
+                            <div key={element.id} id='topNotes' style={{ borderRadius: "5px" }}>
+                                <div id="notes" key={element.id} style={{ backgroundColor: "#a39193", }}>
+                                    <div>
+                                        <div id='deletedData' style={{ display: 'block' }}>
+                                            <div>Title: {element?.title}</div>
+                                            <div>Text: <br /> {parse(element?.text)}</div>
+                                        </div>
+                                        <div id='deletedInfo'>
+                                            {'Deletion date: ' + element.deletetime}
+                                        </div>
                                     </div>
-                                    <div id='deletedInfo'>
-                                        {'Deletion date: ' + element.deletetime}
+                                    <div id='buttons'>
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <Button className='deleteButtons' id={element.id} onClick={deleteNote} variant="outlined" color='error' >x</Button>
                                     </div>
                                 </div>
-                                <div id='buttons'>
-                                    <br />
-                                    <br />
-                                    <br />
-                                    <Button className='deleteButtons' id={element.id} onClick={deleteNote} variant="outlined" color='error' >x</Button>
+                                <div id='hashTag'>
+                                    {element.hashTag?.map((e: string, index: string) => <span key={index} style={{ marginLeft: "3px", borderRadius: "3px", padding: "1px", wordBreak: "break-word" }}>{e}</span>)}
                                 </div>
                             </div>
-                            <div id='hashTag'>
-                                {element.hashTag?.map((e: string, index: string) => <span key={index} style={{ marginLeft: "3px", borderRadius: "3px", padding: "1px", wordBreak: "break-word" }}>{e}</span>)}
-                            </div>
-                        </div>
-                    </Collapse>
-                )
-                }
-                <div id='allNotes'>
-                    <div id='noNotes'>{arrDeletedNoteObj?.length === 0 ? "There's no notes" : null}</div>
-                </div>
-            </TransitionGroup>
+                        </Collapse>
+                    )
+                    }
+                    <div id='allNotes'>
+                        <div id='noNotes'>{arrDeletedNoteObj?.length === 0 ? "There's no notes" : null}</div>
+                    </div>
+                </TransitionGroup>
+            </div>
         </div >
     )
 }
