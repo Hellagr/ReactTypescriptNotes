@@ -10,11 +10,19 @@
 }
 
 mark {
-  background-color: green;
+  background-color: #f6e0b5;
+}
+
+#afterAdd {
+  font-weight: 800;
+  display: flex;
+  justify-content: center;
 }
 
 #taglist {
+  display: block;
   font-size: 11px;
+  word-break: break-all;
 }
 
 #addButton {
@@ -32,6 +40,7 @@ mark {
 }
 
 #notes {
+  background-color: #fefbf6;
   display: flex;
   justify-content: space-between;
   border: solid black 1px;
@@ -110,7 +119,14 @@ ul {
   background-color: gray;
 }
 
+textarea:focus,
+#addDivInput:focus,
+#divInput:focus {
+  outline: #66545e 2px solid;
+}
+
 #titleinput {
+  background-color: #fefbf6;
   border-radius: 5px;
   border: black 1px solid;
   resize: none;
@@ -120,6 +136,7 @@ ul {
   transition: 0.1s;
 }
 #addDivInput {
+  background-color: #fefbf6;
   border: black 1px solid;
   border-radius: 5px;
   height: 150px;
@@ -135,10 +152,11 @@ ul {
 
 #titleinput:hover,
 #addDivInput:hover {
-  box-shadow: 0px 0px 5px 0px rgb(0, 21, 255);
+  box-shadow: 0px 0px 5px 0px #66545e;
 }
 
 #titleedit {
+  background-color: #fefbf6;
   width: 350px;
   height: 15px;
   border-radius: 5px;
@@ -148,6 +166,7 @@ ul {
   animation-iteration-count: infinite;
 }
 #divInput {
+  background-color: #fefbf6;
   border: black 1px solid;
   border-radius: 5px;
   height: 150px;
@@ -215,18 +234,33 @@ ul {
 }
 
 #clock {
+  font-weight: 700;
+  color: #66545e;
   display: flex;
-  margin-top: 1.1rem;
-  margin-bottom: 1.1rem;
+  margin-top: 0.1rem;
   justify-content: space-between;
 }
 
 #allDeletedNotesForTablet {
   display: none;
+  width: 150px;
+}
+
+#createdNotesLabel {
+  margin-bottom: 4px;
+}
+
+#deletedNotesLabel {
+  padding-bottom: 19px;
 }
 
 #allForMobile {
   display: none;
+  width: 150px;
+}
+
+#allDeletedNotes {
+  width: 250px;
 }
 
 #deletedInfo {
@@ -254,6 +288,66 @@ ul {
   width: 200px;
 }
 
+#onlineTagsAddHiiden {
+  display: none;
+}
+
+.edit {
+  background-color: #eea990 !important;
+}
+.delete {
+  background-color: #aa6f73 !important;
+}
+
+.buttonsMaterial {
+  background-color: #8d988d !important;
+}
+
+.subminEditMobile {
+  background-color: #8d988d !important;
+}
+
+.cancelButton {
+  background-color: #9b6450 !important;
+}
+
+#buttonsForText {
+  display: flex;
+  margin-bottom: 3px;
+}
+#fontSize {
+  width: 40px;
+  border: 1px solid;
+  border-radius: 5px;
+  margin-right: 3px;
+  padding: auto;
+  transition: 0.2;
+}
+#boldChng,
+#italicsFont {
+  width: 20px;
+  height: 20px;
+  margin-right: 3px;
+  border-radius: 5px;
+  border: 1px solid;
+  transition: 0.3s;
+}
+#fontColor {
+  width: 20px;
+  height: 20px;
+  border: 1px solid;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+#boldChng:hover,
+#italicsFont:hover,
+#fontColor:hover {
+  background-color: #66545e;
+}
+
+/*/////////////////1100 px/////////////////////////*/
+
 @media (max-width: 1100px) {
   ul {
     padding: 0;
@@ -276,15 +370,48 @@ ul {
   }
 
   .buttonsMaterial {
+    background-color: #8d988d !important;
     max-width: 10px;
     min-width: 10px;
     max-height: 25px;
     min-height: 25px;
-    font-size: 9px !important;
+    font-size: 8px !important;
+    font-size: 11px !important;
     padding: 0 !important;
   }
 
-  .editanddelete {
+  .edit {
+    background-color: #eea990 !important;
+    max-width: 10px;
+    min-width: 10px;
+    max-height: 25px;
+    min-height: 25px;
+    font-size: 8px !important;
+    font-size: 11px !important;
+    padding: 0 !important;
+  }
+  .delete {
+    background-color: #aa6f73 !important;
+    max-width: 10px;
+    min-width: 10px;
+    max-height: 25px;
+    min-height: 25px;
+    font-size: 8px !important;
+    font-size: 11px !important;
+    padding: 0 !important;
+  }
+
+  .subminEditMobile {
+    max-width: 10px;
+    min-width: 10px;
+    max-height: 25px;
+    min-height: 25px;
+    font-size: 8px !important;
+    font-size: 11px !important;
+    padding: 0 !important;
+  }
+
+  .cancelButton {
     max-width: 10px;
     min-width: 10px;
     max-height: 25px;
@@ -310,9 +437,16 @@ ul {
     width: 250px;
   }
 
+  #createdNotesLabel {
+    margin-bottom: 0px;
+  }
+
+  #deletedNotesLabel {
+    padding-bottom: 15px;
+  }
+
   #deletedNotesLabel {
     font-size: 11px;
-    margin-bottom: 1.6rem !important;
   }
 
   #allNotesForPC {
@@ -349,6 +483,8 @@ ul {
   }
 }
 
+/*///////////////// 780 px/////////////////////////*/
+
 @media (max-width: 780px) {
   #allDeletedNotes {
     display: none;
@@ -366,8 +502,20 @@ ul {
   }
 }
 
+/*///////////////// 520 px/////////////////////////*/
+
 @media (max-width: 520px) {
+  body {
+    margin-top: 0px;
+  }
+
+  #clock {
+    margin-top: 0px;
+    margin-bottom: 3px !important;
+  }
+
   #afterAdd {
+    font-weight: 900;
     margin-top: 0 !important;
     margin-bottom: 0 !important;
   }
@@ -381,6 +529,11 @@ ul {
   #allNotesForPC {
     display: none;
   }
+
+  #deletedNotesLabel {
+    padding-bottom: 0px;
+  }
+
   #allDeletedNotesForTablet {
     display: block;
     margin-top: 0;
@@ -438,16 +591,6 @@ ul {
     display: none !important;
   }
 
-  .editanddelete {
-    max-width: 16px !important;
-    min-width: 16px !important;
-    max-height: 16px !important;
-    min-height: 16px !important;
-    border-radius: 10px !important;
-    font-size: 0px !important;
-    padding: 0 !important;
-  }
-
   .deleteButtons {
     max-width: 20px !important;
     min-width: 20px !important;
@@ -458,6 +601,7 @@ ul {
   }
 
   .hiddenAdd {
+    background-color: #8d988d !important;
     display: block !important;
     max-width: 25px !important;
     min-width: 25px !important;
@@ -466,9 +610,8 @@ ul {
     font-size: 17px !important;
     padding: 0 !important;
   }
-  #deletedNotesLabel,
-  #createdNotesLabel {
-    height: 30px;
+  #deletedNotesLabel {
+    padding-bottom: 15px;
   }
 
   #data > div:first-child {
@@ -481,9 +624,10 @@ ul {
   }
 
   #noNotes {
-    justify-content: start;
+    justify-content: center;
     margin-top: 60px;
     font-size: 11px;
+    width: 150px;
   }
 
   #line {
@@ -496,5 +640,54 @@ ul {
     display: block;
     margin-right: 4px;
     margin-left: 4px;
+  }
+
+  #onlineTagsAdd {
+    display: none !important;
+  }
+
+  #onlineTagsAddHiiden {
+    display: block;
+  }
+
+  .edit {
+    background-color: #eea990 !important;
+    max-width: 16px !important;
+    min-width: 16px !important;
+    max-height: 16px !important;
+    min-height: 16px !important;
+    border-radius: 10px !important;
+    font-size: 0px !important;
+    padding: 0 !important;
+  }
+  .delete {
+    background-color: #aa6f73 !important;
+    max-width: 16px !important;
+    min-width: 16px !important;
+    max-height: 16px !important;
+    min-height: 16px !important;
+    border-radius: 10px !important;
+    font-size: 0px !important;
+    padding: 0 !important;
+  }
+
+  .subminEditMobile {
+    background-color: #8d988d !important;
+    max-width: 50px !important;
+    min-width: 50px !important;
+    max-height: 20px !important;
+    min-height: 20px !important;
+    font-size: 10px !important;
+    padding: 0 !important;
+  }
+
+  .cancelButton {
+    background-color: #9b6450 !important;
+    max-width: 50px !important;
+    min-width: 50px !important;
+    max-height: 20px !important;
+    min-height: 20px !important;
+    font-size: 10px !important;
+    padding: 0 !important;
   }
 }

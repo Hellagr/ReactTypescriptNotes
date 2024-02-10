@@ -32,14 +32,14 @@ function DeletedNotes() {
     return (
 
         <div >
-            <div id='deletedNotesLabel' style={{ marginBottom: "2.25rem" }}>
+            <div id='deletedNotesLabel'>
                 Deleted notes:
             </div>
             <TransitionGroup>
                 {arrDeletedNoteObj?.map((element: any) =>
                     <Collapse key={element.id}>
                         <div key={element.id} id='topNotes' style={{ borderRadius: "5px" }}>
-                            <div id="notes" key={element.id} style={{ backgroundColor: "#cdcdcd", }}>
+                            <div id="notes" key={element.id} style={{ backgroundColor: "#a39193", }}>
                                 <div>
                                     <div id='deletedData' style={{ display: 'block' }}>
                                         <div>Title: {element?.title}</div>
@@ -63,8 +63,8 @@ function DeletedNotes() {
                     </Collapse>
                 )
                 }
-                <div id='noNotes'>
-                    {arrDeletedNoteObj?.length === 0 ? "There's no notes" : null}
+                <div id='allNotes'>
+                    <div id='noNotes'>{arrDeletedNoteObj?.length === 0 ? "There's no notes" : null}</div>
                 </div>
             </TransitionGroup>
         </div >

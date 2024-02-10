@@ -173,8 +173,8 @@ function EditNote(this: any, { checked, updateChecked, updateCheckedAdd, regex, 
         <Box>
             <Fade in={checked}>
                 <form id='editNote' onSubmit={updateNote} style={{ display: 'none' }}>
-                    <div id='afterAdd' style={{ marginBottom: '0.95rem' }}>
-                        Edit note:
+                    <div id='afterAdd' >
+                        You are in editing note mode
                     </div>
                     <label>
                         Title:
@@ -186,20 +186,18 @@ function EditNote(this: any, { checked, updateChecked, updateCheckedAdd, regex, 
                     Text area:
                     <br />
                     <div>
-                        <div>
-                            <input id='fontSize' type="number" value={addFontSize} style={{ width: "40px", marginBottom: "5px", borderRadius: "5px" }} title='Font size' onChange={chgFontSize} />
-
-                            <input id='boldChng' type="button" value={"B"} style={{ width: "25px", marginBottom: "5px", marginLeft: "5px", borderRadius: "5px" }} title='Bold font' onClick={chgStyle} />
-
-                            <input id='italicsFont' type="button" value={"I"} style={{ width: "25px", marginBottom: "5px", marginLeft: "5px", borderRadius: "5px" }} title='Italic font' onClick={chgStyle} />
-
-                            <input type="color" title='Font color' id="fontColor" style={{ width: "20px", marginBottom: "5px", marginLeft: "5px", height: "20px", borderRadius: "5px" }} onChange={chgStyle} />
+                        <div id='buttonsForText'>
+                            <input id='fontSize' type="number" value={addFontSize} title='Font size' onChange={chgFontSize} />
+                            <input id='boldChng' type="button" value={"B"} title='Bold font' onClick={chgStyle} />
+                            <input id='italicsFont' type="button" value={"I"} title='Italic font' onClick={chgStyle} />
+                            <input type="color" title='Font color' id="fontColor" onChange={chgStyle} />
                         </div>
                     </div>
                     <div contentEditable={true} id='divInput' onInput={trackDivInput} spellCheck="false" >
                     </div>
-                    <Button className='buttonsMaterial' variant="contained" color="success" size='small' type='submit' >Submit</Button>
-                    <Button className='buttonsMaterial' variant="contained" color="warning" size='small' id='cancelButton' onClick={cancelEdit}>Cancel</Button>
+                    <Button className='subminEditMobile' variant="contained" color="success" size='small' type='submit' >Submit</Button>
+                    {/* <Button className='buttonsMaterial' variant="contained" color="success" size='small' type='submit' >Submit</Button> */}
+                    <Button className='cancelButton' variant="contained" color="warning" size='small' id='cancelButton' onClick={cancelEdit}>Cancel</Button>
                     <div style={{ width: "350px", wordBreak: "break-word", marginLeft: "3px", borderRadius: "3px", padding: "1px" }}>
                         {currentHashTag.current ? currentHashTag.current.join(" ") : null}
                     </div>

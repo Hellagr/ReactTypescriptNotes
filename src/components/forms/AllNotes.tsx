@@ -4,6 +4,8 @@ import { Button, Collapse } from '@mui/material';
 import { TransitionGroup } from 'react-transition-group';
 import { addDeletedNote } from '../../actions/action';
 import parse from 'html-react-parser';
+import { Spa } from '@mui/icons-material';
+import { spawn } from 'child_process';
 
 interface AllNoteProps {
     updateChecked: (update: any) => void
@@ -111,77 +113,82 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
 
     //delete double tags
     const arrHashTags = arrNoteObj?.map((e: any) => e?.hashTag?.map((el: any) => el)).flat().reduce((acum: Array<string>, curr: string) => [...acum.filter((e: any) => e !== curr), curr], []);
+    console.log('arrHashTags::: ', arrHashTags);
 
     return (
         <div id='allNotes'>
-
             <div id='createdNotesLabel'>
                 Created notes:
                 <br />
-                <label id='taglist'>All tags:
-                    {arrHashTags?.map((e: any, index: string) => <span key={index} id={index} onClick={findNote} style={{ borderRadius: "4px", padding: "1px" }}>{e}</span>)}
+                <label id='taglist'>
+                    Tags:
+                    {arrHashTags?.length > 1 ?
+                        arrHashTags?.map((e: any, index: string) => <span key={index} id={index} onClick={findNote} style={{ borderRadius: "4px", padding: "1px" }}>{e}</span>)
+                        :
+                        <span style={{ color: 'gray', fontSize: '11px' }}> No tags</span>
+                    }
                 </label>
             </div>
-            <ul>
-                <TransitionGroup>
-                    {ifActive === true ?
-                        //If a user start searching a note through a hashTag
-                        arrNoteObj.map((el: any) =>
-                            el.hashTag?.some((e: string) => currHash.some((el: string) => el === e)) &&
-                            <Collapse key={el.id}>
-                                <div key={el.id} id='topNotes'>
-                                    <div id="notes" key={el.id}>
-                                        <div id='data'>
-                                            <div>Title: {el?.title}</div>
-                                            <div id='allNotesText'>Text: <br /> {parse(el?.text)}</div>
-                                        </div>
-                                        <div id='buttons'>
-                                            <Button className='editanddelete' variant="contained" color="info" size="small" id={el.id} onClick={showHideEdit}>Edit</Button>
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <Button className='editanddelete' variant="contained" color="error" size="small" id={el.id} onClick={deleteNote}>Delete</Button>
-                                        </div>
-                                    </div>
-                                    <div id='hashTag'>
-                                        <span >
-                                            {el.hashTag.map((e: string, index: string) => <span key={index} style={{ marginLeft: "3px", borderRadius: "3px", padding: "1px" }}>{e}</span>)}
-                                        </span>
-                                    </div>
-                                </div>
 
-                            </Collapse>
-                        )
-                        :
-                        //All notes
-                        arrNoteObj?.map((element: any) =>
-                            <Collapse key={element.id}>
-                                <div key={element?.id} id='topNotes'>
-                                    <div id="notes" key={element?.id}>
-                                        <div id='data'>
-                                            <div>Title: {element?.title}</div>
-                                            <div id='allNotesText'>Text: <br /> {parse(element?.text)}</div>
-                                        </div>
-                                        <div id='buttons'>
-                                            <Button className='editanddelete' variant="contained" color="info" size="small" id={element?.id} onClick={showHideEdit}>Edit</Button>
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <Button className='editanddelete' variant="contained" color="error" size="small" id={element?.id} onClick={deleteNote}>Delete</Button>
-                                        </div>
+            <TransitionGroup>
+                {ifActive === true ?
+                    //If a user start searching a note through a hashTag
+                    arrNoteObj.map((el: any) =>
+                        el.hashTag?.some((e: string) => currHash.some((el: string) => el === e)) &&
+                        <Collapse key={el.id}>
+                            <div key={el.id} id='topNotes'>
+                                <div id="notes" key={el.id}>
+                                    <div id='data'>
+                                        <div>Title: {el?.title}</div>
+                                        <div id='allNotesText'>Text: <br /> {parse(el?.text)}</div>
                                     </div>
-                                    <div id='hashTag'>
-                                        {element.hashTag?.map((e: string, index: string) => <span key={index} style={{ marginLeft: "3px", borderRadius: "3px", padding: "1px", wordBreak: "break-word" }}>{e}</span>)}
+                                    <div id='buttons'>
+                                        <Button className='edit' variant="contained" color="info" size="small" id={el.id} onClick={showHideEdit}>Edit</Button>
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <Button className='delete' variant="contained" color="error" size="small" id={el.id} onClick={deleteNote}>Delete</Button>
                                     </div>
                                 </div>
-                            </Collapse>
-                        )
-                    }
-                    <div id='noNotes'>
-                        {arrNoteObj?.length === 0 ? "There's no notes" : null}
-                    </div>
-                </TransitionGroup>
-            </ul >
+                                <div id='hashTag'>
+                                    <span >
+                                        {el.hashTag.map((e: string, index: string) => <span key={index} style={{ marginLeft: "3px", borderRadius: "3px", padding: "1px" }}>{e}</span>)}
+                                    </span>
+                                </div>
+                            </div>
+
+                        </Collapse>
+                    )
+                    :
+                    //All notes
+                    arrNoteObj?.map((element: any) =>
+                        <Collapse key={element.id}>
+                            <div key={element?.id} id='topNotes'>
+                                <div id="notes" key={element?.id}>
+                                    <div id='data'>
+                                        <div>Title: {element?.title}</div>
+                                        <div id='allNotesText'>Text: <br /> {parse(element?.text)}</div>
+                                    </div>
+                                    <div id='buttons'>
+                                        <Button className='edit' variant="contained" color="info" size="small" id={element?.id} onClick={showHideEdit}>Edit</Button>
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <Button className='delete' variant="contained" color="error" size="small" id={element?.id} onClick={deleteNote}>Delete</Button>
+                                    </div>
+                                </div>
+                                <div id='hashTag'>
+                                    {element.hashTag?.map((e: string, index: string) => <span key={index} style={{ marginLeft: "3px", borderRadius: "3px", padding: "1px", wordBreak: "break-word" }}>{e}</span>)}
+                                </div>
+                            </div>
+                        </Collapse>
+                    )
+                }
+                <div id='noNotes'>
+                    {arrNoteObj?.length === 0 ? "There's no notes" : null}
+                </div>
+            </TransitionGroup>
+
         </div >
     )
 }
