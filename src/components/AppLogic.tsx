@@ -58,7 +58,7 @@ function AppLogic() {
 
     return (
         <div className="App">
-            <div className="App-header" style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+            <div className="App-header">
                 <div>
                     <div>
                         <div id='clock'>

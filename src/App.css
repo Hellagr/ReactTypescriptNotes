@@ -5,8 +5,8 @@
 
 .App-header {
   display: flex;
-  justify-content: center;
-  width: 1200px;
+  justify-content: space-around;
+  width: 1100px;
 }
 
 mark {
@@ -248,10 +248,6 @@ textarea:focus,
 #allDeletedNotesForTablet {
   display: none;
   width: 150px;
-}
-
-#createdNotesLabel {
-  margin-bottom: 4px;
 }
 
 #allForMobile {
@@ -524,6 +520,7 @@ textarea:focus,
   }
 
   #deletedNotesLabel {
+    width: 350px;
     padding-bottom: 0px;
   }
 
