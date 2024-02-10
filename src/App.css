@@ -125,6 +125,10 @@ textarea:focus,
   outline: #66545e 2px solid;
 }
 
+#allNotesForPC {
+  width: 350px;
+}
+
 #titleinput {
   background-color: #fefbf6;
   border-radius: 5px;
