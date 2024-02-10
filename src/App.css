@@ -254,10 +254,6 @@ textarea:focus,
   margin-bottom: 4px;
 }
 
-#deletedNotesLabel {
-  padding-bottom: 19px;
-}
-
 #allForMobile {
   display: none;
   width: 150px;
@@ -447,7 +443,6 @@ textarea:focus,
 
   #deletedNotesLabel {
     font-size: 11px;
-    padding-bottom: 15px;
   }
 
   #allNotesForPC {
