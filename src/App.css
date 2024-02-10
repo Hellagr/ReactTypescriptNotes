@@ -608,9 +608,6 @@ textarea:focus,
     font-size: 17px !important;
     padding: 0 !important;
   }
-  #deletedNotesLabel {
-    padding-bottom: 15px;
-  }
 
   #data > div:first-child {
     border-bottom: rgb(172, 170, 170) 1px solid;

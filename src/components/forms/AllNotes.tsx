@@ -119,15 +119,14 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
         <div id='allNotes'>
             <div id='createdNotesLabel'>
                 Created notes:
-                <br />
-                <label id='taglist'>
+                <div id='taglist'>
                     Tags:
                     {arrHashTags?.length > 1 ?
                         arrHashTags?.map((e: any, index: string) => <span key={index} id={index} onClick={findNote} style={{ borderRadius: "4px", padding: "1px" }}>{e}</span>)
                         :
                         <span style={{ color: 'gray', fontSize: '11px' }}> No tags</span>
                     }
-                </label>
+                </div>
             </div>
 
             <TransitionGroup>

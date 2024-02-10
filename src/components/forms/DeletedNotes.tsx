@@ -34,6 +34,7 @@ function DeletedNotes() {
         <div >
             <div id='deletedNotesLabel'>
                 Deleted notes:
+                <div style={{ height: '15px' }}></div>
             </div>
             <div>
                 <TransitionGroup>
