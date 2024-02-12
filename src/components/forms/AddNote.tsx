@@ -2,9 +2,23 @@ import { MutableRefObject, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { addNoteAction } from '../../actions/action';
 import { store } from '../../store/store';
-import { Button, Fade } from '@mui/material';
+import { Button, Fade, MenuItem, OutlinedInput, Select, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import Box from '@mui/material/Box';
+import { SketchPicker } from 'react-color';
+import FormatBoldIcon from '@mui/icons-material/FormatBold';
+import FormatItalicIcon from '@mui/icons-material/FormatItalic';
+import FormatUnderlinedIcon from '@mui/icons-material/FormatUnderlined';
+import FormatColorFillIcon from '@mui/icons-material/FormatColorFill';
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        },
+    },
+};
 
 interface AddNoteProps {
     regex: RegExp
@@ -25,7 +39,13 @@ interface AddNoteProps {
 function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, updateHashTags, areaTitle, updateAreaTitle, areaText, updateAreaText, trackTitle, checkedAdd }: AddNoteProps) {
 
     const dispatch = useDispatch();
-    const [addFontSize, setAddFontSize] = useState(17);
+    const [addFontSize, setAddFontSize] = useState(20);
+    const [color, setColor] = useState<any>("black");
+    const spanElement = document.createElement("span");
+    const variantsOfFonts = [];
+    for (let i = 6; i <= 36; i++) {
+        variantsOfFonts.push(<MenuItem key={i} value={i}>{i}</MenuItem>)
+    }
 
     //Add object to store
     function submitFunc(e: any) {
@@ -72,63 +92,86 @@ function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, u
         updateAreaText(currentText.current);
     }
 
-    function chgFontSize(e: any) {
-        const addDivInput = document.getElementById('addDivInput') as HTMLDivElement;
-        const spanElement = document.createElement("span");
-        e.preventDefault();
-        setAddFontSize(+e.target.value);
-        const selectedText = window.getSelection();
-        const selectedCurrentText = window.getSelection()?.toString() as string;
-        if (selectedText === null) {
-            return;
-        } else {
-            addDivInput.focus();
-            const selectRange = selectedText?.getRangeAt(0) as Range;
-            spanElement.innerHTML = selectedCurrentText;
-            spanElement.style.fontSize = e.target.value + "px";
-            selectRange.deleteContents();
-            selectRange.insertNode(spanElement);
+    function selection() {
+        let selection = document.getSelection() as Selection;
+        let range = selection.getRangeAt(0) as Range;
+        spanElement.style.fontSize = addFontSize.toString() + "px";
+        const rgbColor = `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`;
+        spanElement.style.color = rgbColor;
+        if (range.toString() === "") {
+            range.insertNode(spanElement);
+            range.selectNodeContents(spanElement);
         }
     }
 
-    //1000000 years of evolution and i used method that not recomended
+
+    function chgFontSize(e: any) {
+        e.preventDefault();
+        setAddFontSize(+e.target.value);
+    }
+
     function chgStyle(e: any) {
         const addDivInput = document.getElementById('addDivInput') as HTMLDivElement;
         e.preventDefault();
-
-        const selectedText = window.getSelection();
         const selectedCurrentText = window.getSelection()?.toString() as string;
-        if (e.target.id === 'boldChng') {
-            if (selectedText === null) {
-                return;
-            } else {
+
+        if (e.target.value === 'boldChng' || e.target.viewportElement?.id === "boldChg" || e.target.id === 'boldChg') {
+            if (selectedCurrentText === "") {
+                document.execCommand('bold');
                 addDivInput.focus();
+            } else {
                 if (selectedCurrentText.length > 0) {
                     document.execCommand('bold');
                 }
             }
         }
-        if (e.target.id === 'italicsFont') {
-            if (selectedText === null) {
-                return;
-            } else {
+
+        if (e.target.value === 'italicsFont' || e.target.viewportElement?.id === "italFont" || e.target.id === 'italFont') {
+            if (selectedCurrentText === "") {
+                document.execCommand('italic');
                 addDivInput.focus();
+            } else {
                 if (selectedCurrentText.length > 0) {
                     document.execCommand('italic');
                 }
             }
         }
-        if (e.target.id === 'fontColor') {
-            if (selectedText === null) {
-                return;
-            } else {
+
+        if (e.target.value === 'underlined' || e.target.viewportElement?.id === "under" || e.target.id === 'under') {
+            if (selectedCurrentText === "") {
+                document.execCommand('underline');
                 addDivInput.focus();
+            } else {
                 if (selectedCurrentText.length > 0) {
-                    document.execCommand('foreColor', false, e.target.value);
+                    document.execCommand('underline');
                 }
             }
         }
+
     }
+
+    function chooseColor(e: any) {
+        setColor(e.rgb)
+        let addDivInput = document.getElementById('addDivInput') as HTMLDivElement;
+        const selection = document.getSelection() as Selection;
+        const selectedCurrentText = window.getSelection()?.toString() as string;
+        const rgbColor = `rgba(${e.rgb.r}, ${e.rgb.g}, ${e.rgb.b}, ${e.rgb.a})`;
+        if (selectedCurrentText === "") {
+            document.execCommand('foreColor', false, rgbColor);
+            addDivInput.focus();
+            selection.removeAllRanges();
+        } else {
+            if (selectedCurrentText.length > 0) {
+                document.execCommand('foreColor', false, rgbColor);
+            }
+        }
+    }
+
+    function visibleColorPicker() {
+        const colorPicker = document.getElementById('colorPicker') as HTMLElement;
+        colorPicker.style.display === "" ? colorPicker.style.display = "flex" : colorPicker.style.display = "";
+    }
+
 
     return (
         <>
@@ -140,17 +183,45 @@ function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, u
                             Title:
                             <textarea name="titleinput" id="titleinput" rows={1} value={areaTitle} onChange={trackTitle}></textarea>
                         </label>
-
-                        Text area:
+                        Text:
                         <br />
                         <div>
-                            <div id='buttonsForText'>
-                                <input id='fontSize' type="number" value={addFontSize} title='Font size' onChange={chgFontSize} />
-                                <input id='boldChng' type="button" value={"B"} title='Bold font' onClick={chgStyle} />
-                                <input id='italicsFont' type="button" value={"I"} title='Italic font' onClick={chgStyle} />
-                                <input type="color" title='Font color' id="fontColor" onChange={chgStyle} />
+                            <div>
+                                <ToggleButtonGroup
+                                    aria-label="text formatting"
+                                    size='small'
+                                >
+
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={addFontSize}
+                                        label="Age"
+                                        onChange={chgFontSize}
+                                        size='small'
+                                        MenuProps={MenuProps}
+                                        input={<OutlinedInput label="Font size" />}
+                                    >
+                                        {variantsOfFonts}
+                                    </Select>
+                                    <ToggleButton value="boldChng" aria-label="bold" onClick={chgStyle} >
+                                        <FormatBoldIcon id="boldChg" onClick={() => chgStyle} />
+                                    </ToggleButton>
+                                    <ToggleButton value="italicsFont" aria-label="italic" onClick={chgStyle}>
+                                        <FormatItalicIcon id="italFont" onClick={() => chgStyle} />
+                                    </ToggleButton>
+                                    <ToggleButton value="underlined" aria-label="underlined" onClick={chgStyle}>
+                                        <FormatUnderlinedIcon id="under" onClick={() => chgStyle} />
+                                    </ToggleButton>
+                                    <ToggleButton value="color" aria-label="color" onClick={visibleColorPicker}>
+                                        <FormatColorFillIcon />
+                                    </ToggleButton>
+                                </ToggleButtonGroup>
+                                <div id='colorPicker'>
+                                    <SketchPicker onChange={chooseColor} color={color} />
+                                </div>
                             </div>
-                            <div contentEditable={true} id='addDivInput' spellCheck="false" onInput={trackDivInput}></div>
+                            <div contentEditable={true} id='addDivInput' spellCheck="false" onClick={selection} onInput={trackDivInput}></div>
                         </div>
                         <Button className='buttonsMaterial' variant="contained" color="success" size='small' type='submit'>Add note</Button>
                         <div style={{ display: 'flex' }}>

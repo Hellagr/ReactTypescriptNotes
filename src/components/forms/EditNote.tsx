@@ -1,9 +1,28 @@
 import { MutableRefObject, useState } from 'react';
 import { updateNoteAction } from '../../actions/action';
 import { useDispatch } from 'react-redux';
-import { Button } from '@mui/material';
+import { Button, MenuItem, OutlinedInput, Select, ToggleButtonGroup } from '@mui/material';
 import Fade from '@mui/material/Fade';
 import Box from '@mui/material/Box';
+import FormatBoldIcon from '@mui/icons-material/FormatBold';
+import FormatItalicIcon from '@mui/icons-material/FormatItalic';
+import FormatUnderlinedIcon from '@mui/icons-material/FormatUnderlined';
+import FormatColorFillIcon from '@mui/icons-material/FormatColorFill';
+import ToggleButton from '@mui/material/ToggleButton';
+import React from 'react';
+import { SketchPicker } from 'react-color';
+
+
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        },
+    },
+};
 
 interface EditNoteProps {
     checked: boolean
@@ -25,7 +44,13 @@ interface EditNoteProps {
 function EditNote(this: any, { checked, updateChecked, updateCheckedAdd, regex, currentTitle, currentText, currentHashTag, currentNoteId, updateHashTags, areaTitle, updateAreaTitle, areaText, updateAreaText, trackTitle }: EditNoteProps) {
 
     const dispatch = useDispatch();
-    const [addFontSize, setAddFontSize] = useState(17);
+    const [addFontSize, setAddFontSize] = useState(20);
+    const [color, setColor] = useState<any>("black");
+    const spanElement = document.createElement("span");
+    const variantsOfFonts = [];
+    for (let i = 6; i <= 36; i++) {
+        variantsOfFonts.push(<MenuItem key={i} value={i}>{i}</MenuItem>)
+    }
 
     // Update note
     const updateNote = (e: any) => {
@@ -52,7 +77,7 @@ function EditNote(this: any, { checked, updateChecked, updateCheckedAdd, regex, 
             }
         };
         request.onerror = (e) => {
-            console.error(`Error: ${e}`);
+            // console.error(`Error: ${e}`);
         };
         e.target.reset();
         updateAreaTitle("");
@@ -66,10 +91,11 @@ function EditNote(this: any, { checked, updateChecked, updateCheckedAdd, regex, 
 
 
 
-    //23523523423 days lost
+    //23523523423 days lost (needs rework)
     function trackDivInput(e: any) {
         e.preventDefault();
         const divInput = document.getElementById('divInput') as HTMLDivElement;
+
         const findHashTag = divInput.textContent?.match(regex);
         updateHashTags(findHashTag);
         currentHashTag.current = findHashTag;
@@ -79,19 +105,27 @@ function EditNote(this: any, { checked, updateChecked, updateCheckedAdd, regex, 
         updateAreaText(currentText.current);
         currentText.current = replaceText;
 
-        if (e.nativeEvent.data === null || e.nativeEvent.data === ' ') {
-            currentText.current = divInput.innerHTML;
-            return;
-        } else {
-            let selection: Selection = document.getSelection() as Selection;
-            for (let i = divInput.childNodes.length; i > 0; i--) {
-                selection.modify('extend', "backward", "line");
-            }
-            const modifyDiv = currentText.current;
-            selection.deleteFromDocument();
-            divInput.insertAdjacentHTML('afterbegin', modifyDiv);
-        }
+        // if (e.nativeEvent.data === null || e.nativeEvent.data === ' ') {
+        //     currentText.current = divInput.innerHTML;
+        //     return;
+        // } else {
+        //     let selection: Selection = document.getSelection() as Selection;
+        //     for (let i = divInput.childNodes.length; i > 0; i--) {
+        //         selection.modify('extend', "backward", "line");
+        //     }
+        //     const modifyDiv = currentText.current;
+        //     selection.deleteFromDocument();
+        //     divInput.insertAdjacentHTML('afterbegin', modifyDiv);
+        //     for (let i = divInput.childNodes.length; i > 0; i--) {
+        //         selection.deleteFromDocument();
+        //         selection.modify('extend', "forward", "line");
+
+        //     }
+
+        // }
     }
+
+
 
     function cancelEdit() {
         updateChecked((prev: any) => !prev);
@@ -104,68 +138,84 @@ function EditNote(this: any, { checked, updateChecked, updateCheckedAdd, regex, 
         currentHashTag.current = [];
     }
 
+    function selection() {
+        let selection = document.getSelection() as Selection;
+        let range = selection.getRangeAt(0) as Range;
+        spanElement.style.fontSize = addFontSize.toString() + "px";
+        const rgbColor = `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`;
+        spanElement.style.color = rgbColor;
+        if (range.toString() === "") {
+            range.insertNode(spanElement);
+            range.selectNodeContents(spanElement);
+        }
+    }
+
+
     function chgFontSize(e: any) {
-        const divInput = document.getElementById('divInput') as HTMLDivElement;
-        const spanElement = document.createElement("span");
         e.preventDefault();
         setAddFontSize(+e.target.value);
-        const selectedText = window.getSelection();
-        const selectedCurrentText = window.getSelection()?.toString() as string;
-        if (selectedText === null) {
-            return;
-        } else {
-            divInput.focus();
-            const selectRange = selectedText?.getRangeAt(0) as Range;
-            spanElement.innerHTML = selectedCurrentText;
-            spanElement.style.fontSize = e.target.value + "px";
-            selectRange.deleteContents();
-            selectRange.insertNode(spanElement);
-        }
-        currentText.current = divInput.innerHTML;
     }
 
     function chgStyle(e: any) {
         const divInput = document.getElementById('divInput') as HTMLDivElement;
-        const span = document.createElement('span');
         e.preventDefault();
-
-        const selectedText = window.getSelection();
         const selectedCurrentText = window.getSelection()?.toString() as string;
-        if (e.target.id === 'boldChng') {
-            if (selectedText === null) {
-                return;
-            } else {
+
+        if (e.target.value === 'boldChng' || e.target.viewportElement?.id === "boldChg" || e.target.id === 'boldChg') {
+            if (selectedCurrentText === "") {
+                document.execCommand('bold');
                 divInput.focus();
+            } else {
                 if (selectedCurrentText.length > 0) {
                     document.execCommand('bold');
                 }
             }
         }
-        if (e.target.id === 'italicsFont') {
-            if (selectedText === null) {
-                return;
-            } else {
+
+        if (e.target.value === 'italicsFont' || e.target.viewportElement?.id === "italFont" || e.target.id === 'italFont') {
+            if (selectedCurrentText === "") {
+                document.execCommand('italic');
                 divInput.focus();
+            } else {
                 if (selectedCurrentText.length > 0) {
                     document.execCommand('italic');
                 }
             }
         }
-        if (e.target.id === 'fontColor') {
-            if (selectedText === null) {
-                return;
-            } else {
+
+        if (e.target.value === 'underlined' || e.target.viewportElement?.id === "under" || e.target.id === 'under') {
+            if (selectedCurrentText === "") {
+                document.execCommand('underline');
                 divInput.focus();
+            } else {
                 if (selectedCurrentText.length > 0) {
-                    divInput.focus();
-                    const selectRange = selectedText?.getRangeAt(0) as Range;
-                    span.innerHTML = selectedCurrentText;
-                    span.style.color = e.target.value;
-                    selectRange.deleteContents();
-                    selectRange.insertNode(span);
+                    document.execCommand('underline');
                 }
             }
         }
+
+    }
+
+    function chooseColor(e: any) {
+        setColor(e.rgb)
+        let divInput = document.getElementById('divInput') as HTMLDivElement;
+        const selection = document.getSelection() as Selection;
+        const selectedCurrentText = window.getSelection()?.toString() as string;
+        const rgbColor = `rgba(${e.rgb.r}, ${e.rgb.g}, ${e.rgb.b}, ${e.rgb.a})`;
+        if (selectedCurrentText === "") {
+            document.execCommand('foreColor', false, rgbColor);
+            divInput.focus();
+            selection.removeAllRanges();
+        } else {
+            if (selectedCurrentText.length > 0) {
+                document.execCommand('foreColor', false, rgbColor);
+            }
+        }
+    }
+
+    function visibleColorPicker() {
+        const colorPicker = document.getElementById('colorPicker') as HTMLElement;
+        colorPicker.style.display === "" ? colorPicker.style.display = "flex" : colorPicker.style.display = "";
     }
 
 
@@ -183,17 +233,46 @@ function EditNote(this: any, { checked, updateChecked, updateCheckedAdd, regex, 
                         </textarea>
                     </label>
 
-                    Text area:
+                    Text:
                     <br />
                     <div>
-                        <div id='buttonsForText'>
-                            <input id='fontSize' type="number" value={addFontSize} title='Font size' onChange={chgFontSize} />
-                            <input id='boldChng' type="button" value={"B"} title='Bold font' onClick={chgStyle} />
-                            <input id='italicsFont' type="button" value={"I"} title='Italic font' onClick={chgStyle} />
-                            <input type="color" title='Font color' id="fontColor" onChange={chgStyle} />
+                        <div>
+                            <ToggleButtonGroup
+                                aria-label="text formatting"
+                                size='small'
+                            >
+
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={addFontSize}
+                                    label="Age"
+                                    onChange={chgFontSize}
+                                    size='small'
+                                    MenuProps={MenuProps}
+                                    input={<OutlinedInput label="Font size" />}
+                                >
+                                    {variantsOfFonts}
+                                </Select>
+                                <ToggleButton value="boldChng" aria-label="bold" onClick={chgStyle} >
+                                    <FormatBoldIcon id="boldChg" onClick={() => chgStyle} />
+                                </ToggleButton>
+                                <ToggleButton value="italicsFont" aria-label="italic" onClick={chgStyle}>
+                                    <FormatItalicIcon id="italFont" onClick={() => chgStyle} />
+                                </ToggleButton>
+                                <ToggleButton value="underlined" aria-label="underlined" onClick={chgStyle}>
+                                    <FormatUnderlinedIcon id="under" onClick={() => chgStyle} />
+                                </ToggleButton>
+                                <ToggleButton value="color" aria-label="color" onClick={visibleColorPicker}>
+                                    <FormatColorFillIcon />
+                                </ToggleButton>
+                            </ToggleButtonGroup>
+                            <div id='colorPicker'>
+                                <SketchPicker onChange={chooseColor} color={color} />
+                            </div>
                         </div>
                     </div>
-                    <div contentEditable={true} id='divInput' onInput={trackDivInput} spellCheck="false" >
+                    <div contentEditable={true} id='divInput' onInput={trackDivInput} spellCheck="false" onClick={selection} defaultValue={currentText.current}>
                     </div>
                     <Button className='subminEditMobile' variant="contained" color="success" size='small' type='submit' >Submit</Button>
                     {/* <Button className='buttonsMaterial' variant="contained" color="success" size='small' type='submit' >Submit</Button> */}
@@ -207,4 +286,4 @@ function EditNote(this: any, { checked, updateChecked, updateCheckedAdd, regex, 
     )
 }
 
-export default EditNote
+export default EditNote;

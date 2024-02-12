@@ -64,7 +64,8 @@ function AppLogic() {
                         <div id='clock'>
                             <Clock
                                 ticking={true}
-                                format={'MMMM Mo | dddd '} />
+                                format={'dddd, MMMM Do'}
+                            />
                             <Clock
                                 ticking={true}
                                 format={'h:mm:ss A'} />

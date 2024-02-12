@@ -30,7 +30,6 @@ function DeletedNotes() {
     };
 
     return (
-
         <div >
             <div id='deletedNotesLabel'>
                 Deleted notes:
@@ -44,11 +43,11 @@ function DeletedNotes() {
                                 <div id="notes" key={element.id} style={{ backgroundColor: "#a39193", }}>
                                     <div>
                                         <div id='deletedData' style={{ display: 'block' }}>
-                                            <div>Title: {element?.title}</div>
-                                            <div>Text: <br /> {parse(element?.text)}</div>
+                                            <div><b>{element?.title}</b></div>
+                                            <div> {parse(element?.text)}</div>
                                         </div>
                                         <div id='deletedInfo'>
-                                            {'Deletion date: ' + element.deletetime}
+                                            {'Deleted: ' + element.deletetime}
                                         </div>
                                     </div>
                                     <div id='buttons'>

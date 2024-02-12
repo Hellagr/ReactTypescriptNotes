@@ -4,8 +4,6 @@ import { Button, Collapse } from '@mui/material';
 import { TransitionGroup } from 'react-transition-group';
 import { addDeletedNote } from '../../actions/action';
 import parse from 'html-react-parser';
-import { Spa } from '@mui/icons-material';
-import { spawn } from 'child_process';
 
 interface AllNoteProps {
     updateChecked: (update: any) => void
@@ -113,7 +111,6 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
 
     //delete double tags
     const arrHashTags = arrNoteObj?.map((e: any) => e?.hashTag?.map((el: any) => el)).flat().reduce((acum: Array<string>, curr: string) => [...acum.filter((e: any) => e !== curr), curr], []);
-    console.log('arrHashTags::: ', arrHashTags);
 
     return (
         <div id='allNotes'>
@@ -138,8 +135,8 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
                             <div key={el.id} id='topNotes'>
                                 <div id="notes" key={el.id}>
                                     <div id='data'>
-                                        <div>Title: {el?.title}</div>
-                                        <div id='allNotesText'>Text: <br /> {parse(el?.text)}</div>
+                                        <div><b>{el?.title}</b></div>
+                                        <div id='allNotesText'>{parse(el?.text)}</div>
                                     </div>
                                     <div id='buttons'>
                                         <Button className='edit' variant="contained" color="info" size="small" id={el.id} onClick={showHideEdit}>Edit</Button>
@@ -165,8 +162,8 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
                             <div key={element?.id} id='topNotes'>
                                 <div id="notes" key={element?.id}>
                                     <div id='data'>
-                                        <div>Title: {element?.title}</div>
-                                        <div id='allNotesText'>Text: <br /> {parse(element?.text)}</div>
+                                        <div><b>{element?.title}</b></div>
+                                        <div id='allNotesText'>{parse(element?.text)}</div>
                                     </div>
                                     <div id='buttons'>
                                         <Button className='edit' variant="contained" color="info" size="small" id={element?.id} onClick={showHideEdit}>Edit</Button>
