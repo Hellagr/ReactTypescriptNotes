@@ -226,7 +226,7 @@ function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, u
                         <Button className='buttonsMaterial' variant="contained" color="success" size='small' type='submit'>Add note</Button>
                         <div style={{ display: 'flex' }}>
                             <div id='hiddenAdd'>
-                                <Button className='hiddenAdd' variant="contained" color="success" size='small' type='submit'>+</Button>
+                                <Button className='hiddenAdd' variant="contained" color="success" size='small' type='submit'>ADD</Button>
                             </div>
                             <div id='onlineTagsAddHiiden' style={{ width: "227px", wordBreak: "break-word", marginLeft: "3px", borderRadius: "3px", paddingLeft: "5px" }}>
                                 {currentHashTag.current ? currentHashTag.current.join(" ") : null}
