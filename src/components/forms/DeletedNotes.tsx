@@ -65,7 +65,7 @@ function DeletedNotes() {
                     )
                     }
                     <div id='allNotes'>
-                        <div id='noNotes'>{arrDeletedNoteObj?.length === 0 ? "There's no notes" : null}</div>
+                        <div id='noNotes'>{arrDeletedNoteObj?.length === 0 ? "There are no notes" : null}</div>
                     </div>
                 </TransitionGroup>
             </div>

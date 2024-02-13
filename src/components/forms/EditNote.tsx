@@ -233,7 +233,7 @@ function EditNote(this: any, { checked, updateChecked, updateCheckedAdd, regex, 
                         </textarea>
                     </label>
 
-                    Text:
+                    Text style:
                     <br />
                     <div>
                         <div>

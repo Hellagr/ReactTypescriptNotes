@@ -181,7 +181,7 @@ function AllNotes({ updateChecked, regex, currentTitle, currentText, currentHash
                     )
                 }
                 <div id='noNotes'>
-                    {arrNoteObj?.length === 0 ? "There's no notes" : null}
+                    {arrNoteObj?.length === 0 ? "There are no notes" : null}
                 </div>
             </TransitionGroup>
 

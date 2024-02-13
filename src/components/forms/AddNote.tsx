@@ -183,7 +183,7 @@ function AddNote({ regex, hashTags, currentTitle, currentText, currentHashTag, u
                             Title:
                             <textarea name="titleinput" id="titleinput" rows={1} value={areaTitle} onChange={trackTitle}></textarea>
                         </label>
-                        Text:
+                        Text style:
                         <br />
                         <div>
                             <div>
